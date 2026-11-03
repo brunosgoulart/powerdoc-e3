@@ -3,9 +3,9 @@
 ' Contrato: mesma ordem do menu, argumentos ID///titulo e chamadas ao Elipse.
 ' ============================================================================
 
-' 01 evento do botao; 02 menu; 03 IDs e titulos; 04 abertura da tela;
-' 05 consulta e dimensao; 06 parser JSON; 07 rotina Vazia.
-' Para manter as opcoes, edite os blocos 02 e 03 em conjunto: SelectMenu
+' 01 evento do botao e menu literal; 02 IDs e titulos; 03 abertura da tela;
+' 04 consulta e dimensao; 05 parser JSON; 06 rotina Vazia.
+' Para manter as opcoes, edite os blocos 01 e 02 em conjunto: SelectMenu
 ' numera as 68 opcoes pela ordem de exibicao; || separa itens do Bypass.
 
 ' ============================================================================
@@ -15,7 +15,93 @@
 Sub button_Click()
     Dim menu, Arg, calcTela
 
-    menu = Application.SelectMenu(MontarMenuPowerDoc())
+    ' Menu literal: todos os grupos, itens e separadores ficam visiveis aqui.
+    menu = Application.SelectMenu( _
+        "Transformador 01{" & _
+            "Energização Sentido Normal Iniciando pelo 500 kV|" & _
+            "Energização Sentido Inverso Iniciando pelo 230 kV|" & _
+            "Desenergização (ambos sentidos) Iniciando pelo 230kV|" & _
+            "Desenergização (ambos sentidos) Iniciando pelo 500kV}" & _
+        "|Transformador 02{" & _
+            "Energização Sentido Normal Iniciando pelo 500 kV|" & _
+            "Energização Sentido Inverso Iniciando pelo 230 kV|" & _
+            "Desenergização (ambos sentidos) Iniciando pelo 230kV|" & _
+            "Desenergização (ambos sentidos) Iniciando pelo 500kV}" & _
+        "|Transformador 03{" & _
+            "Energização Sentido Normal Iniciando pelo 500 kV|" & _
+            "Energização Sentido Inverso Iniciando pelo 230 kV|" & _
+            "Desenergização (ambos sentidos) Iniciando pelo 230kV|" & _
+            "Desenergização (ambos sentidos) Iniciando pelo 500kV}" & _
+        "|Reator 01{" & _
+            "Energização Vão Aberto|" & _
+            "Energização Vão Completo|" & _
+            "Desenergização|" & _
+            "Desenergização e Completar o Vão}" & _
+        "|Reator 02{" & _
+            "Energização Vão Aberto|" & _
+            "Energização Vão Completo|" & _
+            "Desenergização|" & _
+            "Desenergização e Completar o Vão}" & _
+        "|Reator 07{" & _
+            "Energização Vão Aberto|" & _
+            "Energização Vão Completo|" & _
+            "Desenergização|" & _
+            "Desenergização e Completar o Vão}" & _
+        "|Reator 08{" & _
+            "Energização Vão Aberto|" & _
+            "Energização Vão Completo|" & _
+            "Desenergização|" & _
+            "Desenergização e Completar o Vão}" & _
+        "|LT 230 kV PGR/PGS{" & _
+            "Energização Sentido Normal Iniciando por PGR|" & _
+            "Energização Sentido Inverso Iniciando por PGS|" & _
+            "Desenergização (ambos sentidos) Iniciando por PGS|" & _
+            "Desenergização (ambos sentidos) Iniciando por PGR}" & _
+        "|LT 230 kV PGR/SMS{" & _
+            "Energização Sentido Normal Iniciando por PGR|" & _
+            "Energização Sentido Inverso Iniciando por SMS|" & _
+            "Desenergização (ambos sentidos) Iniciando por SMS|" & _
+            "Desenergização (ambos sentidos) Iniciando por PGR}" & _
+        "|LT 230 kV IRN/PGR C2{" & _
+            "Energização Sentido Normal Iniciando por IRN|" & _
+            "Energização Sentido Inverso Iniciando por PGR|" & _
+            "Desenergização Sentido Normal Iniciando por PGR|" & _
+            "Desenergização Sentido Inverso Iniciando por IRN}" & _
+        "|LT 230 kV IVP/PGR C1{" & _
+            "Energização Sentido Normal Iniciando por IVP|" & _
+            "Energização Sentido Inverso Iniciando por PGR|" & _
+            "Desenergização (ambos sentidos) Iniciando por PGR|" & _
+            "Desenergização (ambos sentidos) Iniciando por IVP}" & _
+        "|LT 525 kV IVP/PGR C2{" & _
+            "Energização Sentido Normal Iniciando por IVP|" & _
+            "Energização Sentido Inverso Iniciando por PGR|" & _
+            "Desenergização (ambos sentidos) Iniciando por PGR|" & _
+            "Desenergização (ambos sentidos) Iniciando por IVP}" & _
+        "|LT 525 kV BTA/PGR C1{" & _
+            "Energização Sentido Normal Iniciando por PGR|" & _
+            "Energização Sentido Inverso Iniciando por BTA|" & _
+            "Desenergização (ambos sentidos) Iniciando por BTA|" & _
+            "Desenergização (ambos sentidos) Iniciando por PGR}" & _
+        "|LT 525 kV BTA/PGR C2{" & _
+            "Energização Sentido Normal Iniciando por PGR|" & _
+            "Energização Sentido Inverso Iniciando por BTA|" & _
+            "Desenergização (ambos sentidos) Iniciando por BTA|" & _
+            "Desenergização (ambos sentidos) Iniciando por PGR}" & _
+        "|Bypass{" & _
+            "Disjuntor 722 - Bypass e Isolação|" & _
+            "Disjuntor 722 - Retorno Bypass||" & _
+            "Disjuntor 742 - Bypass e Isolação|" & _
+            "Disjuntor 742 - Retorno Bypass||" & _
+            "Disjuntor 752 - Bypass e Isolação|" & _
+            "Disjuntor 752 - Retorno Bypass||" & _
+            "Disjuntor 732 - Bypass e Isolação|" & _
+            "Disjuntor 732 - Retorno Bypass||" & _
+            "Disjuntor 762 - Bypass e Isolação|" & _
+            "Disjuntor 762 - Retorno Bypass||" & _
+            "Disjuntor 792 - Bypass e Isolação|" & _
+            "Disjuntor 792 - Retorno Bypass}" _
+    )
+
     Arg = ObterArgumentoPowerDoc(menu)
     If Arg = "" Then Exit Sub
 
@@ -27,103 +113,7 @@ End Sub
 
 
 ' ============================================================================
-' 02 | MENU: GRUPOS E ORDEM DAS OPCOES
-' Os submenus iguais sao montados uma vez; textos e separadores sao preservados.
-' ============================================================================
-
-Function MontarMenuPowerDoc()
-    Dim menuTransformador, menuReator, textoMenu
-
-    menuTransformador = _
-        "Energização Sentido Normal Iniciando pelo 500 kV|" & _
-        "Energização Sentido Inverso Iniciando pelo 230 kV|" & _
-        "Desenergização (ambos sentidos) Iniciando pelo 230kV|" & _
-        "Desenergização (ambos sentidos) Iniciando pelo 500kV"
-
-    menuReator = _
-        "Energização Vão Aberto|" & _
-        "Energização Vão Completo|" & _
-        "Desenergização|" & _
-        "Desenergização e Completar o Vão"
-
-    textoMenu = "Transformador 01{" & menuTransformador & "}"
-    textoMenu = textoMenu & "|Transformador 02{" & menuTransformador & "}"
-    textoMenu = textoMenu & "|Transformador 03{" & menuTransformador & "}"
-    textoMenu = textoMenu & "|Reator 01{" & menuReator & "}"
-    textoMenu = textoMenu & "|Reator 02{" & menuReator & "}"
-    textoMenu = textoMenu & "|Reator 07{" & menuReator & "}"
-    textoMenu = textoMenu & "|Reator 08{" & menuReator & "}"
-
-    textoMenu = textoMenu & _
-        "|LT 230 kV PGR/PGS{" & _
-        "Energização Sentido Normal Iniciando por PGR|" & _
-        "Energização Sentido Inverso Iniciando por PGS|" & _
-        "Desenergização (ambos sentidos) Iniciando por PGS|" & _
-        "Desenergização (ambos sentidos) Iniciando por PGR}"
-
-    textoMenu = textoMenu & _
-        "|LT 230 kV PGR/SMS{" & _
-        "Energização Sentido Normal Iniciando por PGR|" & _
-        "Energização Sentido Inverso Iniciando por SMS|" & _
-        "Desenergização (ambos sentidos) Iniciando por SMS|" & _
-        "Desenergização (ambos sentidos) Iniciando por PGR}"
-
-    textoMenu = textoMenu & _
-        "|LT 230 kV IRN/PGR C2{" & _
-        "Energização Sentido Normal Iniciando por IRN|" & _
-        "Energização Sentido Inverso Iniciando por PGR|" & _
-        "Desenergização Sentido Normal Iniciando por PGR|" & _
-        "Desenergização Sentido Inverso Iniciando por IRN}"
-
-    textoMenu = textoMenu & _
-        "|LT 230 kV IVP/PGR C1{" & _
-        "Energização Sentido Normal Iniciando por IVP|" & _
-        "Energização Sentido Inverso Iniciando por PGR|" & _
-        "Desenergização (ambos sentidos) Iniciando por PGR|" & _
-        "Desenergização (ambos sentidos) Iniciando por IVP}"
-
-    textoMenu = textoMenu & _
-        "|LT 525 kV IVP/PGR C2{" & _
-        "Energização Sentido Normal Iniciando por IVP|" & _
-        "Energização Sentido Inverso Iniciando por PGR|" & _
-        "Desenergização (ambos sentidos) Iniciando por PGR|" & _
-        "Desenergização (ambos sentidos) Iniciando por IVP}"
-
-    textoMenu = textoMenu & _
-        "|LT 525 kV BTA/PGR C1{" & _
-        "Energização Sentido Normal Iniciando por PGR|" & _
-        "Energização Sentido Inverso Iniciando por BTA|" & _
-        "Desenergização (ambos sentidos) Iniciando por BTA|" & _
-        "Desenergização (ambos sentidos) Iniciando por PGR}"
-
-    textoMenu = textoMenu & _
-        "|LT 525 kV BTA/PGR C2{" & _
-        "Energização Sentido Normal Iniciando por PGR|" & _
-        "Energização Sentido Inverso Iniciando por BTA|" & _
-        "Desenergização (ambos sentidos) Iniciando por BTA|" & _
-        "Desenergização (ambos sentidos) Iniciando por PGR}"
-
-    textoMenu = textoMenu & _
-        "|Bypass{" & _
-        "Disjuntor 722 - Bypass e Isolação|" & _
-        "Disjuntor 722 - Retorno Bypass||" & _
-        "Disjuntor 742 - Bypass e Isolação|" & _
-        "Disjuntor 742 - Retorno Bypass||" & _
-        "Disjuntor 752 - Bypass e Isolação|" & _
-        "Disjuntor 752 - Retorno Bypass||" & _
-        "Disjuntor 732 - Bypass e Isolação|" & _
-        "Disjuntor 732 - Retorno Bypass||" & _
-        "Disjuntor 762 - Bypass e Isolação|" & _
-        "Disjuntor 762 - Retorno Bypass||" & _
-        "Disjuntor 792 - Bypass e Isolação|" & _
-        "Disjuntor 792 - Retorno Bypass}"
-
-    MontarMenuPowerDoc = textoMenu
-End Function
-
-
-' ============================================================================
-' 03 | DOCUMENTOS: NUMERO DO MENU -> ID///TITULO
+' 02 | DOCUMENTOS: NUMERO DO MENU -> ID///TITULO
 ' IDs e titulos sao literais: nao deduzir pelo nome exibido no menu.
 ' ============================================================================
 
@@ -304,7 +294,7 @@ End Function
 
 
 ' ============================================================================
-' 04 | ABERTURA E POSICIONAMENTO DA TELA
+' 03 | ABERTURA E POSICIONAMENTO DA TELA
 ' Preserva chamadas, formulas, flags e o alcance do On Error Resume Next.
 ' ============================================================================
 
@@ -360,13 +350,13 @@ End Sub
 
 
 ' ============================================================================
-' 05 | CONSULTA HTTP E DIMENSAO DA POPUP
+' 04 | CONSULTA HTTP E DIMENSAO DA POPUP
 ' Duas consultas sincronas, com os mesmos timeouts e mensagens do original.
 ' ============================================================================
 
 Function TamanhoTela(Arg)
 
-    ' 05.01 | Obter o ID atualizado do documento a partir da tag.
+    ' 04.01 | Obter o ID atualizado do documento a partir da tag.
     Dim oJsonParser, aDocID, idUpdated, aj_XmlHttp
     Dim powerDocServerAddressToGetID, powerDocServerAddressToGetInstruction
 
@@ -385,7 +375,7 @@ Function TamanhoTela(Arg)
     oJsonParser.LoadJSONString aj_XmlHttp.responseText
     idUpdated = oJsonParser.data("content").Item(0).Item("id")
 
-    ' 05.02 | Obter as linhas e calcular a altura nas unidades do Elipse.
+    ' 04.02 | Obter as linhas e calcular a altura nas unidades do Elipse.
     powerDocServerAddressToGetInstruction = _
         "http://middleware-powerdocs.ds55.local/integrations/v1/sharing/" & _
         idUpdated & "/content"
@@ -416,7 +406,7 @@ End Function
 
 
 ' ============================================================================
-' 06 | INFRAESTRUTURA: PARSER JSON
+' 05 | INFRAESTRUTURA: PARSER JSON
 ' Classe aspJSON preservada integralmente para manter as conversoes existentes.
 ' ============================================================================
 
@@ -746,7 +736,7 @@ End Class
 
 
 ' ============================================================================
-' 07 | ROTINA VAZIA
+' 06 | ROTINA VAZIA
 ' ============================================================================
 
 Sub Vazia()
