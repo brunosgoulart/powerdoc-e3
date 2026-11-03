@@ -1,0 +1,674 @@
+Sub button_Click()
+' String que indica as informações do menu
+menu = Application.SelectMenu( _
+	"Transformador 01{" & _
+		"Energização Sentido Normal Iniciando pelo 500 kV|" & _
+		"Energização Sentido Inverso Iniciando pelo 230 kV|" & _
+		"Desenergização (ambos sentidos) Iniciando pelo 230kV|" & _
+		"Desenergização (ambos sentidos) Iniciando pelo 500kV}" & _
+	"|Transformador 02{" & _
+		"Energização Sentido Normal Iniciando pelo 500 kV|" & _
+		"Energização Sentido Inverso Iniciando pelo 230 kV|" & _
+		"Desenergização (ambos sentidos) Iniciando pelo 230kV|" & _
+		"Desenergização (ambos sentidos) Iniciando pelo 500kV}" & _
+	"|Transformador 03{" & _
+		"Energização Sentido Normal Iniciando pelo 500 kV|" & _
+		"Energização Sentido Inverso Iniciando pelo 230 kV|" & _
+		"Desenergização (ambos sentidos) Iniciando pelo 230kV|" & _
+		"Desenergização (ambos sentidos) Iniciando pelo 500kV}" & _
+	"|Reator 01{" & _
+		"Energização Vão Aberto|" & _
+		"Energização Vão Completo|" & _
+		"Desenergização|" & _
+		"Desenergização e Completar o Vão}" & _
+	"|Reator 02{" & _
+		"Energização Vão Aberto|" & _
+		"Energização Vão Completo|" & _
+		"Desenergização|" & _
+		"Desenergização e Completar o Vão}" & _
+	"|Reator 07{" & _
+		"Energização Vão Aberto|" & _
+		"Energização Vão Completo|" & _
+		"Desenergização|" & _
+		"Desenergização e Completar o Vão}" & _
+	"|Reator 08{" & _
+		"Energização Vão Aberto|" & _
+		"Energização Vão Completo|" & _
+		"Desenergização|" & _
+		"Desenergização e Completar o Vão}" & _
+	"|LT 230 kV PGR/PGS{" & _
+		"Energização Sentido Normal Iniciando por PGR|" & _
+		"Energização Sentido Inverso Iniciando por PGS|" & _
+		"Desenergização (ambos sentidos) Iniciando por PGS|" & _
+		"Desenergização (ambos sentidos) Iniciando por PGR}" & _
+	"|LT 230 kV PGR/SMS{" & _
+		"Energização Sentido Normal Iniciando por PGR|" & _
+		"Energização Sentido Inverso Iniciando por SMS|" & _
+		"Desenergização (ambos sentidos) Iniciando por SMS|" & _
+		"Desenergização (ambos sentidos) Iniciando por PGR}" & _
+	"|LT 230 kV IRN/PGR C2{" & _
+		"Energização Sentido Normal Iniciando por IRN|" & _
+		"Energização Sentido Inverso Iniciando por PGR|" & _
+		"Desenergização Sentido Normal Iniciando por PGR|" & _
+		"Desenergização Sentido Inverso Iniciando por IRN}" & _
+	"|LT 230 kV IVP/PGR C1{" & _
+		"Energização Sentido Normal Iniciando por IVP|" & _
+		"Energização Sentido Inverso Iniciando por PGR|" & _
+		"Desenergização (ambos sentidos) Iniciando por PGR|" & _
+		"Desenergização (ambos sentidos) Iniciando por IVP}" & _
+	"|LT 525 kV IVP/PGR C2{" & _
+		"Energização Sentido Normal Iniciando por IVP|" & _
+		"Energização Sentido Inverso Iniciando por PGR|" & _
+		"Desenergização (ambos sentidos) Iniciando por PGR|" & _
+		"Desenergização (ambos sentidos) Iniciando por IVP}" & _
+	"|LT 525 kV BTA/PGR C1{" & _
+		"Energização Sentido Normal Iniciando por PGR|" & _
+		"Energização Sentido Inverso Iniciando por BTA|" & _
+		"Desenergização (ambos sentidos) Iniciando por BTA|" & _
+		"Desenergização (ambos sentidos) Iniciando por PGR}" & _
+	"|LT 525 kV BTA/PGR C2{" & _
+		"Energização Sentido Normal Iniciando por PGR|" & _
+		"Energização Sentido Inverso Iniciando por BTA|" & _
+		"Desenergização (ambos sentidos) Iniciando por BTA|" & _
+		"Desenergização (ambos sentidos) Iniciando por PGR}" & _
+	"|Bypass{" & _
+		"Disjuntor 722 - Bypass e Isolação|" & _
+		"Disjuntor 722 - Retorno Bypass||" & _
+		"Disjuntor 742 - Bypass e Isolação|" & _
+		"Disjuntor 742 - Retorno Bypass||" & _
+		"Disjuntor 752 - Bypass e Isolação|" & _
+		"Disjuntor 752 - Retorno Bypass||" & _
+		"Disjuntor 732 - Bypass e Isolação|" & _
+		"Disjuntor 732 - Retorno Bypass||" & _
+		"Disjuntor 762 - Bypass e Isolação|" & _
+		"Disjuntor 762 - Retorno Bypass||" & _
+		"Disjuntor 792 - Bypass e Isolação|" & _
+		"Disjuntor 792 - Retorno Bypass}" _
+	)
+
+	' Altera ARG de acordo com a seleção do usuário
+	' Enviar separado por /// o título do menu selecionado
+	Select Case menu
+		case 1
+			Arg = "IT-OP-PGR-0001-15-49///Transformador 1 - Energização em Sentido Normal Iniciando pelo 500 kV"
+		case 2
+			Arg = "IT-OP-PGR-0001-15-54///Transformador 1 - Energização em Sentido Inverso Iniciando pelo 230 kV"
+		case 3
+			Arg = "IT-OP-PGR-0001-15-61///Transformador 1 - Desenergização (em ambos os sentidos) Iniciando pelo 230kV"
+		case 4
+			Arg = "IT-OP-PGR-0001-15-66///Transformador 1 - Desenergização (em ambos os sentidos) Iniciando pelo 500kV"
+	
+		case 5
+			Arg = "IT-OP-PGR-0001-15-50///Transformador 2 - Energização em Sentido Normal Iniciando pelo 500 kV"
+		case 6
+			Arg = "IT-OP-PGR-0001-15-55///Transformador 2 - Energização em Sentido Inverso Iniciando pelo 230 kV"
+		case 7
+			Arg = "IT-OP-PGR-0001-15-62///Transformador 2 - Desenergização (em ambos os sentidos) Iniciando pelo 230kV"
+		case 8
+			Arg = "IT-OP-PGR-0001-15-67///Transformador 2 - Desenergização (em ambos os sentidos) Iniciando pelo 500kV"
+	
+		case 9
+			Arg = "IT-OP-PGR-0001-15-51///Transformador 3 - Energização em Sentido Normal Iniciando pelo 500 kV"
+		case 10
+			Arg = "IT-OP-PGR-0001-15-56///Transformador 3 - Energização em Sentido Inverso Iniciando pelo 230 kV"
+		case 11
+			Arg = "IT-OP-PGR-0001-15-63///Transformador 3 - Desenergização (em ambos os sentidos) Iniciando pelo 230kV"
+		case 12
+			Arg = "IT-OP-PGR-0001-15-68///Transformador 3 - Desenergização (em ambos os sentidos) Iniciando pelo 500kV"
+	
+		case 13
+			Arg = "IT-OP-PGR-0001-15-72///Reator 1 - Energização Vão Aberto"
+		case 14
+			Arg = "IT-OP-PGR-0001-15-73///Reator 1 - Energização Vão Completo"
+		case 15
+			Arg = "IT-OP-PGR-0001-15-78///Reator 1 - Desenergização"
+		case 16
+			Arg = "IT-OP-PGR-0001-15-79///Reator 1 - Desenergização e Completar o Vão"
+	
+		case 17
+			Arg = "IT-OP-PGR-0001-15-75///Reator 2 - Energização Vão Aberto"
+		case 18
+			Arg = "IT-OP-PGR-0001-15-76///Reator 2 - Energização Vão Completo"
+		case 19
+			Arg = "IT-OP-PGR-0001-15-81///Reator 2 - Desenergização"
+		case 20
+			Arg = "IT-OP-PGR-0001-15-82///Reator 2 - Desenergização e Completar o Vão"
+	
+		case 21
+			Arg = "IT-OP-PGR-0001-19-77///Reator 7 - Energização Vão Aberto"
+		case 22
+			Arg = "IT-OP-PGR-0001-19-78///Reator 7 - Energização Vão Completo"
+		case 23
+			Arg = "IT-OP-PGR-0001-19-89///Reator 7 - Desenergização"
+		case 24
+			Arg = "IT-OP-PGR-0001-19-90///Reator 7 - Desenergização e Completar o Vão"
+	
+		case 25
+			Arg = "IT-OP-PGR-0001-19-80///Reator 8 - Energização Vão Aberto"
+		case 26
+			Arg = "IT-OP-PGR-0001-19-81///Reator 8 - Energização Vão Completo"
+		case 27
+			Arg = "IT-OP-PGR-0001-19-92///Reator 8 - Desenergização"
+		case 28
+			Arg = "IT-OP-PGR-0001-19-93///Reator 8 - Desenergização e Completar o Vão"
+	
+		case 29
+			Arg = "IT-OP-TEGA-0004-12-5///LT 230 kV PGR/PGS - Energização (em Sentido Normal) Iniciando por PGR"
+		case 30
+			Arg = "IT-OP-TEGA-0004-12-8///LT 230 kV PGR/PGS - Energização (em Sentido Inverso) Inverso por PGS"
+		case 31
+			Arg = "IT-OP-TEGA-0004-12-11///LT 230 kV PGR/PGS - Desenergização (em ambos os sentidos) Iniciando por PGS"
+		case 32
+			Arg = "IT-OP-TEGA-0004-12-12///LT 230 kV PGR/PGS - Desenergização (em ambos os sentidos) Iniciando por PGR"
+	
+		case 33
+			Arg = "IT-OP-TEGA-0003-13-5///LT 230 kV PGR/SMS - Energização (em Sentido Normal) Iniciando por PGR"
+		case 34
+			Arg = "IT-OP-TEGA-0003-13-8///LT 230 kV PGR/SMS - Energização (em Sentido Inverso) Iniciando por SMS"
+		case 35
+			Arg = "IT-OP-TEGA-0003-13-11///LT 230 kV PGR/SMS - Desenergização (em ambos os sentidos) Iniciando por SMS"
+		case 36
+			Arg = "IT-OP-TEGA-0003-13-12///LT 230 kV PGR/SMS - Desenergização (em ambos os sentidos) Iniciando por PGR"
+	
+		case 37
+			Arg = "IT-OP-TEGA-0012-6-5///LT 230 kV IRN/PGR C2 - Energização (em Sentido Normal) Iniciando por IRN"
+		case 38
+			Arg = "IT-OP-TEGA-0012-6-8///LT 230 kV IRN/PGR C2 - Energização (em Sentido Inverso) Iniciando por PGR"
+		case 39
+			Arg = "IT-OP-TEGA-0012-6-11///LT 230 kV IRN/PGR C2 - Desenergização Sentido Normal Iniciando por PGR"
+		case 40
+			Arg = "IT-OP-TEGA-0012-6-12///LT 230 kV IRN/PGR C2 - Desenergização Sentido Inverso Iniciando por IRN"
+	
+		case 41
+			Arg = "IT-OP-TEGA-0009-18-7///LT 230 kV IVP/PGR C1 - Energização (em Sentido Normal) Iniciando por IVP"
+		case 42
+			Arg = "IT-OP-TEGA-0009-18-10///LT 230 kV IVP/PGR C1 - Energização (em Sentido Inverso) Iniciando por PGR"
+		case 43
+			Arg = "IT-OP-TEGA-0009-18-13///LT 230 kV IVP/PGR C1 - Desenergização (em ambos os sentidos) Iniciando por PGR"
+		case 44
+			Arg = "IT-OP-TEGA-0009-18-14///LT 230 kV IVP/PGR C1 - Desenergização (em ambos os sentidos) Iniciando por IVP"
+	
+		case 45
+			Arg = "IT-OP-TEGA-0007-22-7///LT 230 kV IVP/PGR C2 - Energização (em Sentido Normal) Iniciando por IVP"
+		case 46
+			Arg = "IT-OP-TEGA-0007-22-10///LT 230 kV IVP/PGR C2 - Energização (em Sentido Inverso) Iniciando por PGR"
+		case 47
+			Arg = "IT-OP-TEGA-0007-22-13///LT 230 kV IVP/PGR C2 - Desenergização (em ambos os sentidos) Iniciando por PGR"
+		case 48
+			Arg = "IT-OP-TEGA-0007-22-14///LT 230 kV IVP/PGR C2 - Desenergização (em ambos os sentidos) Iniciando por IVP"
+	
+		case 49
+			Arg = "IT-OP-TEGA-0008-14-5///LT 230 kV BTA/PGR C1 - Energização (em Sentido Normal) Iniciando por PGR"
+		case 50
+			Arg = "IT-OP-TEGA-0008-14-8///LT 230 kV BTA/PGR C1 - Energização (em Sentido Inverso) Iniciando por BTA"
+		case 51
+			Arg = "IT-OP-TEGA-0008-14-11///LT 230 kV BTA/PGR C1 - Desenergização (em ambos os sentidos) Iniciando por BTA"
+		case 52
+			Arg = "IT-OP-TEGA-0008-14-12///LT 230 kV BTA/PGR C1 - Desenergização (em ambos os sentidos) Iniciando por PGR"
+	
+		case 53
+			Arg = "IT-OP-TEGA-0010-14-5///LT 230 kV BTA/PGR C2 - Energização (em Sentido Normal) Iniciando por PGR"
+		case 54
+			Arg = "IT-OP-TEGA-0010-14-8///LT 230 kV BTA/PGR C2 - Energização (em Sentido Inverso) Iniciando por BTA"
+		case 55
+			Arg = "IT-OP-TEGA-0010-14-11///LT 230 kV BTA/PGR C2 - Desenergização (em ambos os sentidos) Iniciando por BTA"
+		case 56
+			Arg = "IT-OP-TEGA-0010-14-12///LT 230 kV BTA/PGR C2 - Desenergização (em ambos os sentidos) Iniciando por PGR"
+	
+		case 57
+			Arg = "IT-OP-PGR-0002-1-13///Disjuntor 722 - Bypass e Isolação"
+		case 58
+			Arg = "IT-OP-PGR-0002-1-14///Disjuntor 722 - Retorno Bypass"
+		case 59
+			Arg = "IT-OP-PGR-0002-1-16///Disjuntor 742 - Bypass e Isolação"
+		case 60
+			Arg = "IT-OP-PGR-0002-1-17///Disjuntor 742 - Retorno Bypass"
+		case 61
+			Arg = "IT-OP-PGR-0002-1-19///Disjuntor 752 - Bypass e Isolação"
+		case 62
+			Arg = "IT-OP-PGR-0002-1-20///Disjuntor 752 - Retorno Bypass"
+		case 63
+			Arg = "IT-OP-PGR-0002-1-22///Disjuntor 732 - Bypass e Isolação"
+		case 64
+			Arg = "IT-OP-PGR-0002-1-23///Disjuntor 732 - Retorno Bypass"
+		case 65
+			Arg = "IT-OP-PGR-0002-1-25///Disjuntor 762 - Bypass e Isolação"
+		case 66
+			Arg = "IT-OP-PGR-0002-1-26///Disjuntor 762 - Retorno Bypass"
+		case 67
+			Arg = "IT-OP-PGR-0002-1-28///Disjuntor 792 - Bypass e Isolação"
+		case 68
+			Arg = "IT-OP-PGR-0002-1-29///Disjuntor 792 - Retorno Bypass"
+	
+		case else
+			Exit Sub
+	End Select
+	
+	calcTela = TamanhoTela(Arg)
+	if calcTela = "" then exit sub
+	' Abre a popup de acordo com o informado
+	Dim v_a_screen, v_a_Titulo, v_a_flags
+	v_a_screen = Trim("POP.SYS.pop_17_Power_Doc")
+
+	If v_a_screen <> "" Then
+	
+		If Left(v_a_screen, 3) = "SCR" Then
+			'Abertura de tela
+			Application.GetFrame("div_Body").OpenScreen v_a_screen & "?100?0", 0
+		Else
+			'Abertura de popup
+			Dim newPosX, newPosY, mouseX, mouseY, popWidth, popHeight, scrWidht, scrHeight
+			On Error Resume Next
+			screenParam = Split(v_a_screen, "?", -1, 1)
+				
+			Set SCR = Application.GetScreen(screenParam(0))
+				v_a_Titulo = Application.Item("SCR").Item("tag_0_Plant").Value & "-" & Application.Item("SCR").Item("tag_1_Unit").Value
+				v_a_flags = 1+2+16+64+256
+				Set FRM = Application.GetFrame(replace(v_a_screen, "?", "_"))
+					FRM.SetFrameOptions v_a_Titulo, v_a_flags
+									
+					mouseX = Application.GetMouseX() 
+					mouseY = Application.GetMouseY()
+					scrWidth = Application.WindowWidth
+					scrHeight = Application.WindowHeight
+					popWidth = SCR.Width * 96/2540 + 17
+					popHeight = calcTela * 96/2540 + 40
+						
+					'Definição de qual monitor ocorreu a chamada de popup
+					monitorID = CInt((mouseX / scrWidth) + 0.5)
+						
+					'************ Abertura popup centralizado em tela ************
+					'Definição da posição X da abertura de popup
+					newPosX = ((monitorID * scrWidth) - popWidth) / 2
+								
+					'Definição da posição Y da abertura de popup
+					newPosY = (scrHeight - popHeight) / 2	
+							
+					FRM.MoveFrame newPosX, newPosY, popWidth, popHeight
+					FRM.ShowScreen SCR, 100, 0, Arg
+					FRM.SetFrameOptions v_a_Titulo, v_a_flags
+				Set FRM = Nothing
+				Set SCR = Nothing
+			On Error Goto 0
+			
+		End If
+	End If
+End Sub
+'_________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+Function TamanhoTela(Arg)
+
+	'Leitura do ID
+	Dim oJsonParser, powerDocServerAddress
+	
+	aDocID = split(Arg, "///")
+
+	'reading the ID
+	powerDocServerAddressToGetID = "http://middleware-powerdocs.ds55.local/integrations/v1/sharing?tag=" & aDocID(0)
+  	Set oJsonParser = new aspJSON
+	
+	Set aj_XmlHttp = CreateObject("MSXML2.ServerXMLHTTP")
+    aj_XmlHttp.open "GET", powerDocServerAddressToGetID, False
+	aj_XmlHttp.setTimeouts 5000, 5000, 5000, 5000    
+    aj_XmlHttp.setRequestHeader "Content-Type", "application/json"
+    aj_XmlHttp.setRequestHeader "Authorization", "Basic ZWxpcHNlOkJ2Y0VtcnJ4UVphWG9iaVg3ZEI0alhnS0VEdXFuOHREYXlBNlpxZElpL3ZOajdZdQ=="
+    aj_XmlHttp.Send
+    
+    'Msgbox aj_XmlHttp.Status
+    If aj_XmlHttp.Status <> 200 Then
+    	Msgbox "Erro "& aj_XmlHttp.Status& " na requisição do ID."
+    	Exit Function
+    End If    
+      
+    oJsonParser.LoadJSONString aj_XmlHttp.responseText
+    idUpdated = oJsonParser.data("content").Item(0).Item("id")
+    
+    
+    'reading the instruction
+    powerDocServerAddressToGetInstruction = "http://middleware-powerdocs.ds55.local/integrations/v1/sharing/"&idUpdated&"/content"
+    Set aj_XmlHttp = CreateObject("MSXML2.ServerXMLHTTP")
+	aj_XmlHttp.open "GET", powerDocServerAddressToGetInstruction, False
+	aj_XmlHttp.setTimeouts 5000, 5000, 5000, 5000
+	aj_XmlHttp.setRequestHeader "Content-Type", "application/json"
+    aj_XmlHttp.setRequestHeader "Authorization", "Basic ZWxpcHNlOkJ2Y0VtcnJ4UVphWG9iaVg3ZEI0alhnS0VEdXFuOHREYXlBNlpxZElpL3ZOajdZdQ=="
+	aj_XmlHttp.Send
+	
+	'Msgbox aj_XmlHttp.Status
+	If aj_XmlHttp.Status <> 200 Then
+	    Msgbox "Erro "& aj_XmlHttp.Status& " na requisição do ID."
+	    Exit Function
+	End If
+	
+	oJsonParser.LoadJSONString aj_XmlHttp.responseText              
+	TamanhoTela = ((oJsonParser.data("rows").Count+1)*1200) + 200
+
+End Function
+'_________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+Class aspJSON
+	Public data
+	Private p_JSONstring
+	private aj_in_string, aj_in_escape, aj_i_tmp, aj_char_tmp, aj_s_tmp, aj_line_tmp, aj_line, aj_lines, aj_currentlevel, aj_currentkey, aj_currentvalue, aj_newlabel, aj_XmlHttp, aj_RegExp, aj_colonfound
+
+	Private Sub Class_Initialize()
+		Set data = Collection()
+
+	    Set aj_RegExp = new regexp
+	    aj_RegExp.Pattern = "\s{0,}(\S{1}[\s,\S]*\S{1})\s{0,}"
+	    aj_RegExp.Global = False
+	    aj_RegExp.IgnoreCase = True
+	    aj_RegExp.Multiline = True
+	End Sub
+
+	Private Sub Class_Terminate()
+		Set data = Nothing
+	    Set aj_RegExp = Nothing
+	End Sub
+
+	Public Sub loadJSON(URL)
+	
+		inputsource = aj_MultilineTrim(URL)'Webservice
+		If Len(inputsource) = 0 Then Err.Raise 1, "loadJSON Error", "No data to load."
+		
+				Set aj_XmlHttp = CreateObject("MSXML2.ServerXMLHTTP")
+				aj_XmlHttp.open "GET", inputsource, false
+				aj_XmlHttp.setRequestHeader "Content-Type", "application/json"
+				aj_XmlHttp.setRequestHeader "CharSet", "UTF-8"
+				aj_XmlHttp.Send
+				
+				'Verifica se iniciada com "{" ou "["
+				if Left(aj_XmlHttp.responseText, 1) = "{" then
+					inputsource = "["+aj_XmlHttp.responseText+"]"
+				else
+					inputsource = aj_XmlHttp.responseText
+				end if	
+				
+				set aj_XmlHttp = Nothing
+	
+		p_JSONstring = CleanUpJSONstring(inputsource)
+		' gTag = inputsource
+		aj_lines = Split(p_JSONstring, Chr(13) & Chr(10))
+
+		Dim level(99)
+		aj_currentlevel = 1
+		Set level(aj_currentlevel) = data
+		
+		For Each aj_line In aj_lines
+			aj_currentkey = ""
+			aj_currentvalue = ""
+			If Instr(aj_line, ":") > 0 Then
+				aj_in_string = False
+				aj_in_escape = False
+				aj_colonfound = False
+				For aj_i_tmp = 1 To Len(aj_line)
+					If aj_in_escape Then
+						aj_in_escape = False
+					Else
+						Select Case Mid(aj_line, aj_i_tmp, 1)
+							Case """"
+								aj_in_string = Not aj_in_string
+							Case ":"
+								If Not aj_in_escape And Not aj_in_string Then
+									aj_currentkey = Left(aj_line, aj_i_tmp - 1)
+									aj_currentvalue = Mid(aj_line, aj_i_tmp + 1)
+									aj_colonfound = True
+									Exit For
+								End If
+							Case "\"
+								aj_in_escape = True
+						End Select
+					End If
+				Next
+				if aj_colonfound then
+					aj_currentkey = aj_Strip(aj_JSONDecode(aj_currentkey), """")
+					If Not level(aj_currentlevel).exists(aj_currentkey) Then level(aj_currentlevel).Add aj_currentkey, ""
+				end if
+			End If
+			If right(aj_line,1) = "{" Or right(aj_line,1) = "[" Then
+				If Len(aj_currentkey) = 0 Then aj_currentkey = level(aj_currentlevel).Count
+				Set level(aj_currentlevel).Item(aj_currentkey) = Collection()
+				Set level(aj_currentlevel + 1) = level(aj_currentlevel).Item(aj_currentkey)
+				aj_currentlevel = aj_currentlevel + 1
+				aj_currentkey = ""
+			ElseIf right(aj_line,1) = "}" Or right(aj_line,1) = "]" or right(aj_line,2) = "}," Or right(aj_line,2) = "]," Then
+				aj_currentlevel = aj_currentlevel - 1
+			ElseIf Len(Trim(aj_line)) > 0 Then
+				if Len(aj_currentvalue) = 0 Then aj_currentvalue = aj_line
+				aj_currentvalue = getJSONValue(aj_currentvalue)
+
+				If Len(aj_currentkey) = 0 Then aj_currentkey = level(aj_currentlevel).Count
+				level(aj_currentlevel).Item(aj_currentkey) = aj_currentvalue
+			End If
+		
+		Next
+		
+	End Sub
+
+	Public Function Collection()
+		set Collection = CreateObject("Scripting.Dictionary")
+	End Function
+
+	Public Function AddToCollection(dictobj)
+		if TypeName(dictobj) <> "Dictionary" then Err.Raise 1, "AddToCollection Error", "Not a collection."
+		aj_newlabel = dictobj.Count
+		dictobj.Add aj_newlabel, Collection()
+		set AddToCollection = dictobj.item(aj_newlabel)
+	end function
+
+	Private Function CleanUpJSONstring(aj_originalstring)
+		aj_originalstring = Replace(aj_originalstring, Chr(13) & Chr(10), "")
+		aj_originalstring = Mid(aj_originalstring, 2, Len(aj_originalstring) - 2)
+		aj_in_string = False : aj_in_escape = False : aj_s_tmp = ""
+		For aj_i_tmp = 1 To Len(aj_originalstring)
+			aj_char_tmp = Mid(aj_originalstring, aj_i_tmp, 1)
+			If aj_in_escape Then
+				aj_in_escape = False
+				aj_s_tmp = aj_s_tmp & aj_char_tmp
+			Else
+				Select Case aj_char_tmp
+					Case "\" : aj_s_tmp = aj_s_tmp & aj_char_tmp : aj_in_escape = True
+					Case """" : aj_s_tmp = aj_s_tmp & aj_char_tmp : aj_in_string = Not aj_in_string
+					Case "{", "["
+						aj_s_tmp = aj_s_tmp & aj_char_tmp & aj_InlineIf(aj_in_string, "", Chr(13) & Chr(10))
+					Case "}", "]"
+						aj_s_tmp = aj_s_tmp & aj_InlineIf(aj_in_string, "", Chr(13) & Chr(10)) & aj_char_tmp
+					Case "," : aj_s_tmp = aj_s_tmp & aj_char_tmp & aj_InlineIf(aj_in_string, "", Chr(13) & Chr(10))
+					Case Else : aj_s_tmp = aj_s_tmp & aj_char_tmp
+				End Select
+			End If
+		Next
+
+		CleanUpJSONstring = ""
+		aj_s_tmp = split(aj_s_tmp, Chr(13) & Chr(10))
+		For Each aj_line_tmp In aj_s_tmp
+			aj_line_tmp = replace(replace(aj_line_tmp, chr(10), ""), chr(13), "")
+			CleanUpJSONstring = CleanUpJSONstring & aj_Trim(aj_line_tmp) & Chr(13) & Chr(10)
+		Next
+	End Function
+
+	Private Function getJSONValue(ByVal val)
+		val = Trim(val)
+		If Left(val,1) = ":"  Then val = Mid(val, 2)
+		If Right(val,1) = "," Then val = Left(val, Len(val) - 1)
+		val = Trim(val)
+
+		Select Case val
+			Case "true"  : getJSONValue = True
+			Case "false" : getJSONValue = False
+			Case "null" : getJSONValue = Null
+			Case Else
+				If (Instr(val, """") = 0) Then
+					If IsNumeric(val) Then
+						getJSONValue = CDbl(val)
+					Else
+						getJSONValue = val
+					End If
+				Else
+					If Left(val,1) = """" Then val = Mid(val, 2)
+					If Right(val,1) = """" Then val = Left(val, Len(val) - 1)
+					getJSONValue = aj_JSONDecode(Trim(val))
+				End If
+		End Select
+	End Function
+
+	Private JSONoutput_level
+	Public Function JSONoutput()
+		dim wrap_dicttype, aj_label
+		JSONoutput_level = 1
+		wrap_dicttype = "[]"
+		For Each aj_label In data
+			 If Not aj_IsInt(aj_label) Then wrap_dicttype = "{}"
+		Next
+		JSONoutput = Left(wrap_dicttype, 1) & Chr(13) & Chr(10) & GetDict(data) & Right(wrap_dicttype, 1)
+	End Function
+
+	Private Function GetDict(objDict)
+		dim aj_item, aj_keyvals, aj_label, aj_dicttype
+		For Each aj_item In objDict
+			Select Case TypeName(objDict.Item(aj_item))
+				Case "Dictionary"
+					GetDict = GetDict & Space(JSONoutput_level * 4)
+					
+					aj_dicttype = "[]"
+					For Each aj_label In objDict.Item(aj_item).Keys
+						 If Not aj_IsInt(aj_label) Then aj_dicttype = "{}"
+					Next
+					If aj_IsInt(aj_item) Then
+						GetDict = GetDict & (Left(aj_dicttype,1) & Chr(13) & Chr(10))
+					Else
+						GetDict = GetDict & ("""" & aj_JSONEncode(aj_item) & """" & ": " & Left(aj_dicttype,1) & Chr(13) & Chr(10))
+					End If
+					JSONoutput_level = JSONoutput_level + 1
+					
+					aj_keyvals = objDict.Keys
+					GetDict = GetDict & (GetSubDict(objDict.Item(aj_item)) & Space(JSONoutput_level * 4) & Right(aj_dicttype,1) & aj_InlineIf(aj_item = aj_keyvals(objDict.Count - 1),"" , ",") & Chr(13) & Chr(10))
+				Case Else
+					aj_keyvals =  objDict.Keys
+					GetDict = GetDict & (Space(JSONoutput_level * 4) & aj_InlineIf(aj_IsInt(aj_item), "", """" & aj_JSONEncode(aj_item) & """: ") & WriteValue(objDict.Item(aj_item)) & aj_InlineIf(aj_item = aj_keyvals(objDict.Count - 1),"" , ",") & Chr(13) & Chr(10))
+			End Select
+		Next
+	End Function
+
+	Private Function aj_IsInt(val)
+		aj_IsInt = (TypeName(val) = "Integer" Or TypeName(val) = "Long")
+	End Function
+
+	Private Function GetSubDict(objSubDict)
+		GetSubDict = GetDict(objSubDict)
+		JSONoutput_level= JSONoutput_level -1
+	End Function
+
+	Private Function WriteValue(ByVal val)
+		Select Case TypeName(val)
+			Case "Double", "Integer", "Long": WriteValue = val
+			Case "Null"						: WriteValue = "null"
+			Case "Boolean"					: WriteValue = aj_InlineIf(val, "true", "false")
+			Case Else						: WriteValue = """" & aj_JSONEncode(val) & """"
+		End Select
+	End Function
+
+	Private Function aj_JSONEncode(ByVal val)
+		val = Replace(val, "\", "\\")
+		val = Replace(val, """", "\""")
+		'val = Replace(val, "/", "\/")
+		val = Replace(val, Chr(8), "\b")
+		val = Replace(val, Chr(12), "\f")
+		val = Replace(val, Chr(10), "\n")
+		val = Replace(val, Chr(13), "\r")
+		val = Replace(val, Chr(9), "\t")
+		aj_JSONEncode = Trim(val)
+	End Function
+
+	Private Function aj_JSONDecode(ByVal val)
+		val = Replace(val, "\""", """")
+		val = Replace(val, "\\", "\")
+		val = Replace(val, "\/", "/")
+		val = Replace(val, "\b", Chr(8))
+		val = Replace(val, "\f", Chr(12))
+		val = Replace(val, "\n", Chr(10))
+		val = Replace(val, "\r", Chr(13))
+		val = Replace(val, "\t", Chr(9))
+		aj_JSONDecode = Trim(val)
+	End Function
+
+	Private Function aj_InlineIf(condition, returntrue, returnfalse)
+		If condition Then aj_InlineIf = returntrue Else aj_InlineIf = returnfalse
+	End Function
+
+	Private Function aj_Strip(ByVal val, stripper)
+		If Left(val, 1) = stripper Then val = Mid(val, 2)
+		If Right(val, 1) = stripper Then val = Left(val, Len(val) - 1)
+		aj_Strip = val
+	End Function
+
+	Private Function aj_MultilineTrim(TextData)
+		aj_MultilineTrim = aj_RegExp.Replace(TextData, "$1")
+	End Function
+
+	private function aj_Trim(val)
+		aj_Trim = Trim(val)
+		Do While Left(aj_Trim, 1) = Chr(9) : aj_Trim = Mid(aj_Trim, 2) : Loop
+		Do While Right(aj_Trim, 1) = Chr(9) : aj_Trim = Left(aj_Trim, Len(aj_Trim) - 1) : Loop
+		aj_Trim = Trim(aj_Trim)
+	end function
+	
+Public Sub LoadJSONString(ByVal JSONString)
+    p_JSONstring = CleanUpJSONstring(JSONString)
+    aj_lines = Split(p_JSONstring, Chr(13) & Chr(10))
+
+    Dim level(99)
+    aj_currentlevel = 1
+    Set level(aj_currentlevel) = data
+
+    For Each aj_line In aj_lines
+        aj_currentkey = ""
+        aj_currentvalue = ""
+        If InStr(aj_line, ":") > 0 Then
+            aj_in_string = False
+            aj_in_escape = False
+            aj_colonfound = False
+            For aj_i_tmp = 1 To Len(aj_line)
+                If aj_in_escape Then
+                    aj_in_escape = False
+                Else
+                    Select Case Mid(aj_line, aj_i_tmp, 1)
+                        Case """"
+                            aj_in_string = Not aj_in_string
+                        Case ":"
+                            If Not aj_in_escape And Not aj_in_string Then
+                                aj_currentkey = Left(aj_line, aj_i_tmp - 1)
+                                aj_currentvalue = Mid(aj_line, aj_i_tmp + 1)
+                                aj_colonfound = True
+                                Exit For
+                            End If
+                        Case "\"
+                            aj_in_escape = True
+                    End Select
+                End If
+            Next
+            If aj_colonfound Then
+                aj_currentkey = aj_Strip(aj_JSONDecode(aj_currentkey), """")
+                If Not level(aj_currentlevel).Exists(aj_currentkey) Then level(aj_currentlevel).Add aj_currentkey, ""
+            End If
+        End If
+        If Right(aj_line, 1) = "{" Or Right(aj_line, 1) = "[" Then
+            If Len(aj_currentkey) = 0 Then aj_currentkey = level(aj_currentlevel).Count
+            Set level(aj_currentlevel).Item(aj_currentkey) = Collection()
+            Set level(aj_currentlevel + 1) = level(aj_currentlevel).Item(aj_currentkey)
+            aj_currentlevel = aj_currentlevel + 1
+            aj_currentkey = ""
+        ElseIf Right(aj_line, 1) = "}" Or Right(aj_line, 1) = "]" Or Right(aj_line, 2) = "}," Or Right(aj_line, 2) = "]," Then
+            aj_currentlevel = aj_currentlevel - 1
+        ElseIf Len(Trim(aj_line)) > 0 Then
+            If Len(aj_currentvalue) = 0 Then aj_currentvalue = aj_line
+            aj_currentvalue = getJSONValue(aj_currentvalue)
+            If Len(aj_currentkey) = 0 Then aj_currentkey = level(aj_currentlevel).Count
+            level(aj_currentlevel).Item(aj_currentkey) = aj_currentvalue
+        End If
+    Next
+End Sub
+End Class
+'_________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+Sub Vazia()	
+End Sub
