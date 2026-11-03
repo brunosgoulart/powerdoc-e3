@@ -1,36 +1,70 @@
 Sub xc_PowerDoc_OnF_B_ConfigChanged()
 
-    ' POWERDOC | ORGANIZACAO EM BLOCOS
-' Base: trecho fornecido na conversa em 28/10/2026.
+' POWERDOC | MANUTENCAO DAS INSTRUCOES RECONHECIDAS
 '
-' INDICE
-' 01 | Evento principal: entrada, HTTP, JSON e montagem da tela
-' 02 | Regras de interpretacao: prioridade original preservada
-' 03 | Utilitarios: extracao, normalizacao e codigos de operador
-' 04 | Mapeamentos e leituras: disjuntores e grupos por subestacao
-'      04.01 | Disjuntores: IVP / PGR / PGS / SMS / compartilhados
-'      04.02 | IVP: potencia ativa e religamento tripolar
-'      04.03 | PGR: PSD e diferenca angular
-'      04.04 | IRN: potencia ativa
-'      04.05 | Tensao de barras: IVP / IRN / PGR
-'      04.06 | Estado N-1: IVP / IRN / PGR
-' 05 | Infraestrutura: parser JSON original
-' 06 | Rotina vazia ao final do trecho
+' Este script interpreta as frases recebidas do PowerDoc e cria os checks.
+' O texto das instrucoes e mantido no PowerDoc; o menu e os IDs dos documentos
+' ficam em button.vbs. Aqui sao mantidos o reconhecimento, os valores e as tags.
 '
-' CRITERIO DE ORGANIZACAO
-' Regras ficam em ordem de prioridade. Tags ficam perto das suas SEs.
-' SEs citadas na frase podem ser terminais remotos; os grupos de leitura
-' sao definidos pela subestacao da tag, nao apenas pelo nome da LT.
-' Casos compartilhados continuam juntos para preservar a selecao original.
+' EDITAR UMA INSTRUCAO JA PREVISTA
+' 1. Localize a regra no bloco 02, pela ordem abaixo:
+'    02.01 abrir/fechar disjuntor; 02.02 sistema completo/N-1;
+'    02.03 potencia IRN/PGR C1; 02.04 potencia LT PGR C1/C2;
+'    02.05 diferenca angular; 02.06 religamento tripolar;
+'    02.07 PSD dos transformadores; 02.08 comparacao numerica generica.
+' 2. Para aceitar outra redacao da mesma instrucao, ajuste o padrao de
+'    NovoRegExp da regra. Preserve a ordem dos grupos capturados: cada
+'    SubMatches(n) e usado para identificar equipamento, SE ou referencia.
+'    Na regra generica, as expressoes de comparacao ficam em ExtrairOperador
+'    e ExtrairReferenciaNumerica (bloco 03); mantenha as duas coerentes.
+' 3. Para mudar limite ou estado esperado, confira referencia_valor,
+'    referencia_unidade, referencia_estado e operador_check na regra.
+'    Operadores do check: 1 >, 2 >=, 3 =, 4 <=, 5 <.
+'    Algumas referencias sao fixas na regra; outras vem da frase capturada.
+' 4. Para trocar somente a leitura SCADA, edite a funcao do bloco 04:
+'    04.01 ObterTagGPEDisjuntor (IVP/PGR/PGS/SMS e numeros compartilhados);
+'    04.02 ObterTagGPEPotenciaAtiva / ObterTagGPEReligamentoTripolar (IVP);
+'    04.03 ObterTagGPEPSD / ObterTagGPEDiferencaAngular (PGR);
+'    04.04 ObterTagGPEPotenciaAtivaIRN (IRN);
+'    04.05 ObterTagGPE (tensao de barras IVP/IRN/PGR);
+'    04.06 ObterTagCLCN1 (estado N-1 IVP/IRN/PGR).
 '
-' LIMITES DESTA REVISAO
-' Nomes, assinaturas, escopo de variaveis, chamadas HTTP, regras, conversoes,
-' caminhos de tags, valores de referencia e desenho da tela foram mantidos.
-' Corpos de rotinas mantidos; apenas comentarios, espacos, ordem de declaracao
-' e agrupamento de Case com numeros distintos foram reorganizados.
-' A unica complementacao sintatica e o End Sub de Vazia, ausente no trecho.
-' Nao foram aplicadas as correcoes funcionais apontadas na analise anterior.
-' Validacao estatica; nao houve execucao no Elipse nem acesso ao middleware.
+' ADICIONAR EQUIPAMENTO A UMA INSTRUCAO PREVISTA
+' Reutilize a regra existente e amplie seus equipamentos/circuitos aceitos,
+' quando necessario; depois inclua o Case na funcao de tags correspondente.
+' Exemplo: um novo disjuntor exige o numero em ObterTagGPEDisjuntor e sua tag
+' de posicao. Se o numero existir em mais de uma SE, explicite a selecao por
+' subestacao e preserve os retornos Else existentes para os demais casos.
+' Para novos nomes de SE, confira tambem NormalizarSiglaSubestacao;
+' para barras, confira NormalizarEquipamento e os testes locais do bloco 04.
+' As leituras sao agrupadas pela SE da tag, que pode diferir do nome da LT.
+'
+' Se a instrucao exigir uma regra adicional, use uma regra semelhante do
+' bloco 02 como modelo: padrao de texto, campos do dicionario, tag e retorno
+' (Set ExtrairInstrucao = info / Exit Function). Posicione-a antes da regra
+' generica, respeitando as prioridades existentes. Inclua seu mapeamento no
+' bloco 04 e confira referencia_valor, tag_gpe e operador_check do novo caso.
+'
+' REMOVER OU DEIXAR DE VALIDAR UMA INSTRUCAO
+' Para retirar a linha do documento, remova-a no PowerDoc.
+' Para manter o texto visivel, mas sem check de um equipamento, remova seu
+' mapeamento de tag e garanta que esse caso retorne "", sem cair em um Else
+' que devolva outra tag. No N-1, tag vazia permite continuar nas outras regras.
+' Para desativar uma regra inteira, revise tambem as regras seguintes:
+' retirar seu reconhecimento pode fazer a frase cair na comparacao generica.
+'
+' CUIDADOS AO MANTER AS REGRAS
+' A ordem do bloco 02 define prioridade; preserve os Exit Function e deixe
+' a comparacao generica por ultimo. O dicionario de retorno e o mesmo para
+' todas as regras (02.00). O bloco 01.06.b cria o check apenas se houver
+' referencia_valor, tag_gpe e operador_check > 0; o texto e sempre exibido.
+' Confira frases atendidas e nao atendidas, abrir/fechar, circuitos C1/C2,
+' numeros compartilhados entre SEs, operador, referencia e caminho da tag.
+' Valide no Elipse o texto e o check resultantes apos cada alteracao.
+'
+' MAPA DO ARQUIVO
+' 01 evento principal (HTTP, texto e checks); 02 regras por prioridade;
+' 03 extracao e normalizacao; 04 tags por SE; 05 parser JSON; 06 rotina Vazia.
 
 ' ============================================================================
 ' 01 | EVENTO PRINCIPAL

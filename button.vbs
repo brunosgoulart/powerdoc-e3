@@ -1,349 +1,424 @@
+' ============================================================================
+' POWERDOC | SELECAO DO DOCUMENTO E ABERTURA DA TELA
+' Contrato: mesma ordem do menu, argumentos ID///titulo e chamadas ao Elipse.
+' ============================================================================
+
+' 01 evento do botao; 02 menu; 03 IDs e titulos; 04 abertura da tela;
+' 05 consulta e dimensao; 06 parser JSON; 07 rotina Vazia.
+' Para manter as opcoes, edite os blocos 02 e 03 em conjunto: SelectMenu
+' numera as 68 opcoes pela ordem de exibicao; || separa itens do Bypass.
+
+' ============================================================================
+' 01 | EVENTO DO BOTAO
+' ============================================================================
+
 Sub button_Click()
-' String que indica as informações do menu
-menu = Application.SelectMenu( _
-	"Transformador 01{" & _
-		"Energização Sentido Normal Iniciando pelo 500 kV|" & _
-		"Energização Sentido Inverso Iniciando pelo 230 kV|" & _
-		"Desenergização (ambos sentidos) Iniciando pelo 230kV|" & _
-		"Desenergização (ambos sentidos) Iniciando pelo 500kV}" & _
-	"|Transformador 02{" & _
-		"Energização Sentido Normal Iniciando pelo 500 kV|" & _
-		"Energização Sentido Inverso Iniciando pelo 230 kV|" & _
-		"Desenergização (ambos sentidos) Iniciando pelo 230kV|" & _
-		"Desenergização (ambos sentidos) Iniciando pelo 500kV}" & _
-	"|Transformador 03{" & _
-		"Energização Sentido Normal Iniciando pelo 500 kV|" & _
-		"Energização Sentido Inverso Iniciando pelo 230 kV|" & _
-		"Desenergização (ambos sentidos) Iniciando pelo 230kV|" & _
-		"Desenergização (ambos sentidos) Iniciando pelo 500kV}" & _
-	"|Reator 01{" & _
-		"Energização Vão Aberto|" & _
-		"Energização Vão Completo|" & _
-		"Desenergização|" & _
-		"Desenergização e Completar o Vão}" & _
-	"|Reator 02{" & _
-		"Energização Vão Aberto|" & _
-		"Energização Vão Completo|" & _
-		"Desenergização|" & _
-		"Desenergização e Completar o Vão}" & _
-	"|Reator 07{" & _
-		"Energização Vão Aberto|" & _
-		"Energização Vão Completo|" & _
-		"Desenergização|" & _
-		"Desenergização e Completar o Vão}" & _
-	"|Reator 08{" & _
-		"Energização Vão Aberto|" & _
-		"Energização Vão Completo|" & _
-		"Desenergização|" & _
-		"Desenergização e Completar o Vão}" & _
-	"|LT 230 kV PGR/PGS{" & _
-		"Energização Sentido Normal Iniciando por PGR|" & _
-		"Energização Sentido Inverso Iniciando por PGS|" & _
-		"Desenergização (ambos sentidos) Iniciando por PGS|" & _
-		"Desenergização (ambos sentidos) Iniciando por PGR}" & _
-	"|LT 230 kV PGR/SMS{" & _
-		"Energização Sentido Normal Iniciando por PGR|" & _
-		"Energização Sentido Inverso Iniciando por SMS|" & _
-		"Desenergização (ambos sentidos) Iniciando por SMS|" & _
-		"Desenergização (ambos sentidos) Iniciando por PGR}" & _
-	"|LT 230 kV IRN/PGR C2{" & _
-		"Energização Sentido Normal Iniciando por IRN|" & _
-		"Energização Sentido Inverso Iniciando por PGR|" & _
-		"Desenergização Sentido Normal Iniciando por PGR|" & _
-		"Desenergização Sentido Inverso Iniciando por IRN}" & _
-	"|LT 230 kV IVP/PGR C1{" & _
-		"Energização Sentido Normal Iniciando por IVP|" & _
-		"Energização Sentido Inverso Iniciando por PGR|" & _
-		"Desenergização (ambos sentidos) Iniciando por PGR|" & _
-		"Desenergização (ambos sentidos) Iniciando por IVP}" & _
-	"|LT 525 kV IVP/PGR C2{" & _
-		"Energização Sentido Normal Iniciando por IVP|" & _
-		"Energização Sentido Inverso Iniciando por PGR|" & _
-		"Desenergização (ambos sentidos) Iniciando por PGR|" & _
-		"Desenergização (ambos sentidos) Iniciando por IVP}" & _
-	"|LT 525 kV BTA/PGR C1{" & _
-		"Energização Sentido Normal Iniciando por PGR|" & _
-		"Energização Sentido Inverso Iniciando por BTA|" & _
-		"Desenergização (ambos sentidos) Iniciando por BTA|" & _
-		"Desenergização (ambos sentidos) Iniciando por PGR}" & _
-	"|LT 525 kV BTA/PGR C2{" & _
-		"Energização Sentido Normal Iniciando por PGR|" & _
-		"Energização Sentido Inverso Iniciando por BTA|" & _
-		"Desenergização (ambos sentidos) Iniciando por BTA|" & _
-		"Desenergização (ambos sentidos) Iniciando por PGR}" & _
-	"|Bypass{" & _
-		"Disjuntor 722 - Bypass e Isolação|" & _
-		"Disjuntor 722 - Retorno Bypass||" & _
-		"Disjuntor 742 - Bypass e Isolação|" & _
-		"Disjuntor 742 - Retorno Bypass||" & _
-		"Disjuntor 752 - Bypass e Isolação|" & _
-		"Disjuntor 752 - Retorno Bypass||" & _
-		"Disjuntor 732 - Bypass e Isolação|" & _
-		"Disjuntor 732 - Retorno Bypass||" & _
-		"Disjuntor 762 - Bypass e Isolação|" & _
-		"Disjuntor 762 - Retorno Bypass||" & _
-		"Disjuntor 792 - Bypass e Isolação|" & _
-		"Disjuntor 792 - Retorno Bypass}" _
-	)
+    Dim menu, Arg, calcTela
 
-	' Altera ARG de acordo com a seleção do usuário
-	' Enviar separado por /// o título do menu selecionado
-	Select Case menu
-		case 1
-			Arg = "IT-OP-PGR-0001-15-49///Transformador 1 - Energização em Sentido Normal Iniciando pelo 500 kV"
-		case 2
-			Arg = "IT-OP-PGR-0001-15-54///Transformador 1 - Energização em Sentido Inverso Iniciando pelo 230 kV"
-		case 3
-			Arg = "IT-OP-PGR-0001-15-61///Transformador 1 - Desenergização (em ambos os sentidos) Iniciando pelo 230kV"
-		case 4
-			Arg = "IT-OP-PGR-0001-15-66///Transformador 1 - Desenergização (em ambos os sentidos) Iniciando pelo 500kV"
-	
-		case 5
-			Arg = "IT-OP-PGR-0001-15-50///Transformador 2 - Energização em Sentido Normal Iniciando pelo 500 kV"
-		case 6
-			Arg = "IT-OP-PGR-0001-15-55///Transformador 2 - Energização em Sentido Inverso Iniciando pelo 230 kV"
-		case 7
-			Arg = "IT-OP-PGR-0001-15-62///Transformador 2 - Desenergização (em ambos os sentidos) Iniciando pelo 230kV"
-		case 8
-			Arg = "IT-OP-PGR-0001-15-67///Transformador 2 - Desenergização (em ambos os sentidos) Iniciando pelo 500kV"
-	
-		case 9
-			Arg = "IT-OP-PGR-0001-15-51///Transformador 3 - Energização em Sentido Normal Iniciando pelo 500 kV"
-		case 10
-			Arg = "IT-OP-PGR-0001-15-56///Transformador 3 - Energização em Sentido Inverso Iniciando pelo 230 kV"
-		case 11
-			Arg = "IT-OP-PGR-0001-15-63///Transformador 3 - Desenergização (em ambos os sentidos) Iniciando pelo 230kV"
-		case 12
-			Arg = "IT-OP-PGR-0001-15-68///Transformador 3 - Desenergização (em ambos os sentidos) Iniciando pelo 500kV"
-	
-		case 13
-			Arg = "IT-OP-PGR-0001-15-72///Reator 1 - Energização Vão Aberto"
-		case 14
-			Arg = "IT-OP-PGR-0001-15-73///Reator 1 - Energização Vão Completo"
-		case 15
-			Arg = "IT-OP-PGR-0001-15-78///Reator 1 - Desenergização"
-		case 16
-			Arg = "IT-OP-PGR-0001-15-79///Reator 1 - Desenergização e Completar o Vão"
-	
-		case 17
-			Arg = "IT-OP-PGR-0001-15-75///Reator 2 - Energização Vão Aberto"
-		case 18
-			Arg = "IT-OP-PGR-0001-15-76///Reator 2 - Energização Vão Completo"
-		case 19
-			Arg = "IT-OP-PGR-0001-15-81///Reator 2 - Desenergização"
-		case 20
-			Arg = "IT-OP-PGR-0001-15-82///Reator 2 - Desenergização e Completar o Vão"
-	
-		case 21
-			Arg = "IT-OP-PGR-0001-19-77///Reator 7 - Energização Vão Aberto"
-		case 22
-			Arg = "IT-OP-PGR-0001-19-78///Reator 7 - Energização Vão Completo"
-		case 23
-			Arg = "IT-OP-PGR-0001-19-89///Reator 7 - Desenergização"
-		case 24
-			Arg = "IT-OP-PGR-0001-19-90///Reator 7 - Desenergização e Completar o Vão"
-	
-		case 25
-			Arg = "IT-OP-PGR-0001-19-80///Reator 8 - Energização Vão Aberto"
-		case 26
-			Arg = "IT-OP-PGR-0001-19-81///Reator 8 - Energização Vão Completo"
-		case 27
-			Arg = "IT-OP-PGR-0001-19-92///Reator 8 - Desenergização"
-		case 28
-			Arg = "IT-OP-PGR-0001-19-93///Reator 8 - Desenergização e Completar o Vão"
-	
-		case 29
-			Arg = "IT-OP-TEGA-0004-12-5///LT 230 kV PGR/PGS - Energização (em Sentido Normal) Iniciando por PGR"
-		case 30
-			Arg = "IT-OP-TEGA-0004-12-8///LT 230 kV PGR/PGS - Energização (em Sentido Inverso) Inverso por PGS"
-		case 31
-			Arg = "IT-OP-TEGA-0004-12-11///LT 230 kV PGR/PGS - Desenergização (em ambos os sentidos) Iniciando por PGS"
-		case 32
-			Arg = "IT-OP-TEGA-0004-12-12///LT 230 kV PGR/PGS - Desenergização (em ambos os sentidos) Iniciando por PGR"
-	
-		case 33
-			Arg = "IT-OP-TEGA-0003-13-5///LT 230 kV PGR/SMS - Energização (em Sentido Normal) Iniciando por PGR"
-		case 34
-			Arg = "IT-OP-TEGA-0003-13-8///LT 230 kV PGR/SMS - Energização (em Sentido Inverso) Iniciando por SMS"
-		case 35
-			Arg = "IT-OP-TEGA-0003-13-11///LT 230 kV PGR/SMS - Desenergização (em ambos os sentidos) Iniciando por SMS"
-		case 36
-			Arg = "IT-OP-TEGA-0003-13-12///LT 230 kV PGR/SMS - Desenergização (em ambos os sentidos) Iniciando por PGR"
-	
-		case 37
-			Arg = "IT-OP-TEGA-0012-6-5///LT 230 kV IRN/PGR C2 - Energização (em Sentido Normal) Iniciando por IRN"
-		case 38
-			Arg = "IT-OP-TEGA-0012-6-8///LT 230 kV IRN/PGR C2 - Energização (em Sentido Inverso) Iniciando por PGR"
-		case 39
-			Arg = "IT-OP-TEGA-0012-6-11///LT 230 kV IRN/PGR C2 - Desenergização Sentido Normal Iniciando por PGR"
-		case 40
-			Arg = "IT-OP-TEGA-0012-6-12///LT 230 kV IRN/PGR C2 - Desenergização Sentido Inverso Iniciando por IRN"
-	
-		case 41
-			Arg = "IT-OP-TEGA-0009-18-7///LT 230 kV IVP/PGR C1 - Energização (em Sentido Normal) Iniciando por IVP"
-		case 42
-			Arg = "IT-OP-TEGA-0009-18-10///LT 230 kV IVP/PGR C1 - Energização (em Sentido Inverso) Iniciando por PGR"
-		case 43
-			Arg = "IT-OP-TEGA-0009-18-13///LT 230 kV IVP/PGR C1 - Desenergização (em ambos os sentidos) Iniciando por PGR"
-		case 44
-			Arg = "IT-OP-TEGA-0009-18-14///LT 230 kV IVP/PGR C1 - Desenergização (em ambos os sentidos) Iniciando por IVP"
-	
-		case 45
-			Arg = "IT-OP-TEGA-0007-22-7///LT 230 kV IVP/PGR C2 - Energização (em Sentido Normal) Iniciando por IVP"
-		case 46
-			Arg = "IT-OP-TEGA-0007-22-10///LT 230 kV IVP/PGR C2 - Energização (em Sentido Inverso) Iniciando por PGR"
-		case 47
-			Arg = "IT-OP-TEGA-0007-22-13///LT 230 kV IVP/PGR C2 - Desenergização (em ambos os sentidos) Iniciando por PGR"
-		case 48
-			Arg = "IT-OP-TEGA-0007-22-14///LT 230 kV IVP/PGR C2 - Desenergização (em ambos os sentidos) Iniciando por IVP"
-	
-		case 49
-			Arg = "IT-OP-TEGA-0008-14-5///LT 230 kV BTA/PGR C1 - Energização (em Sentido Normal) Iniciando por PGR"
-		case 50
-			Arg = "IT-OP-TEGA-0008-14-8///LT 230 kV BTA/PGR C1 - Energização (em Sentido Inverso) Iniciando por BTA"
-		case 51
-			Arg = "IT-OP-TEGA-0008-14-11///LT 230 kV BTA/PGR C1 - Desenergização (em ambos os sentidos) Iniciando por BTA"
-		case 52
-			Arg = "IT-OP-TEGA-0008-14-12///LT 230 kV BTA/PGR C1 - Desenergização (em ambos os sentidos) Iniciando por PGR"
-	
-		case 53
-			Arg = "IT-OP-TEGA-0010-14-5///LT 230 kV BTA/PGR C2 - Energização (em Sentido Normal) Iniciando por PGR"
-		case 54
-			Arg = "IT-OP-TEGA-0010-14-8///LT 230 kV BTA/PGR C2 - Energização (em Sentido Inverso) Iniciando por BTA"
-		case 55
-			Arg = "IT-OP-TEGA-0010-14-11///LT 230 kV BTA/PGR C2 - Desenergização (em ambos os sentidos) Iniciando por BTA"
-		case 56
-			Arg = "IT-OP-TEGA-0010-14-12///LT 230 kV BTA/PGR C2 - Desenergização (em ambos os sentidos) Iniciando por PGR"
-	
-		case 57
-			Arg = "IT-OP-PGR-0002-1-13///Disjuntor 722 - Bypass e Isolação"
-		case 58
-			Arg = "IT-OP-PGR-0002-1-14///Disjuntor 722 - Retorno Bypass"
-		case 59
-			Arg = "IT-OP-PGR-0002-1-16///Disjuntor 742 - Bypass e Isolação"
-		case 60
-			Arg = "IT-OP-PGR-0002-1-17///Disjuntor 742 - Retorno Bypass"
-		case 61
-			Arg = "IT-OP-PGR-0002-1-19///Disjuntor 752 - Bypass e Isolação"
-		case 62
-			Arg = "IT-OP-PGR-0002-1-20///Disjuntor 752 - Retorno Bypass"
-		case 63
-			Arg = "IT-OP-PGR-0002-1-22///Disjuntor 732 - Bypass e Isolação"
-		case 64
-			Arg = "IT-OP-PGR-0002-1-23///Disjuntor 732 - Retorno Bypass"
-		case 65
-			Arg = "IT-OP-PGR-0002-1-25///Disjuntor 762 - Bypass e Isolação"
-		case 66
-			Arg = "IT-OP-PGR-0002-1-26///Disjuntor 762 - Retorno Bypass"
-		case 67
-			Arg = "IT-OP-PGR-0002-1-28///Disjuntor 792 - Bypass e Isolação"
-		case 68
-			Arg = "IT-OP-PGR-0002-1-29///Disjuntor 792 - Retorno Bypass"
-	
-		case else
-			Exit Sub
-	End Select
-	
-	calcTela = TamanhoTela(Arg)
-	if calcTela = "" then exit sub
-	' Abre a popup de acordo com o informado
-	Dim v_a_screen, v_a_Titulo, v_a_flags
-	v_a_screen = Trim("POP.SYS.pop_17_Power_Doc")
+    menu = Application.SelectMenu(MontarMenuPowerDoc())
+    Arg = ObterArgumentoPowerDoc(menu)
+    If Arg = "" Then Exit Sub
 
-	If v_a_screen <> "" Then
-	
-		If Left(v_a_screen, 3) = "SCR" Then
-			'Abertura de tela
-			Application.GetFrame("div_Body").OpenScreen v_a_screen & "?100?0", 0
-		Else
-			'Abertura de popup
-			Dim newPosX, newPosY, mouseX, mouseY, popWidth, popHeight, scrWidht, scrHeight
-			On Error Resume Next
-			screenParam = Split(v_a_screen, "?", -1, 1)
-				
-			Set SCR = Application.GetScreen(screenParam(0))
-				v_a_Titulo = Application.Item("SCR").Item("tag_0_Plant").Value & "-" & Application.Item("SCR").Item("tag_1_Unit").Value
-				v_a_flags = 1+2+16+64+256
-				Set FRM = Application.GetFrame(replace(v_a_screen, "?", "_"))
-					FRM.SetFrameOptions v_a_Titulo, v_a_flags
-									
-					mouseX = Application.GetMouseX() 
-					mouseY = Application.GetMouseY()
-					scrWidth = Application.WindowWidth
-					scrHeight = Application.WindowHeight
-					popWidth = SCR.Width * 96/2540 + 17
-					popHeight = calcTela * 96/2540 + 40
-						
-					'Definição de qual monitor ocorreu a chamada de popup
-					monitorID = CInt((mouseX / scrWidth) + 0.5)
-						
-					'************ Abertura popup centralizado em tela ************
-					'Definição da posição X da abertura de popup
-					newPosX = ((monitorID * scrWidth) - popWidth) / 2
-								
-					'Definição da posição Y da abertura de popup
-					newPosY = (scrHeight - popHeight) / 2	
-							
-					FRM.MoveFrame newPosX, newPosY, popWidth, popHeight
-					FRM.ShowScreen SCR, 100, 0, Arg
-					FRM.SetFrameOptions v_a_Titulo, v_a_flags
-				Set FRM = Nothing
-				Set SCR = Nothing
-			On Error Goto 0
-			
-		End If
-	End If
+    calcTela = TamanhoTela(Arg)
+    If calcTela = "" Then Exit Sub
+
+    AbrirTelaPowerDoc Arg, calcTela
 End Sub
-'_________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+
+' ============================================================================
+' 02 | MENU: GRUPOS E ORDEM DAS OPCOES
+' Os submenus iguais sao montados uma vez; textos e separadores sao preservados.
+' ============================================================================
+
+Function MontarMenuPowerDoc()
+    Dim menuTransformador, menuReator, textoMenu
+
+    menuTransformador = _
+        "Energização Sentido Normal Iniciando pelo 500 kV|" & _
+        "Energização Sentido Inverso Iniciando pelo 230 kV|" & _
+        "Desenergização (ambos sentidos) Iniciando pelo 230kV|" & _
+        "Desenergização (ambos sentidos) Iniciando pelo 500kV"
+
+    menuReator = _
+        "Energização Vão Aberto|" & _
+        "Energização Vão Completo|" & _
+        "Desenergização|" & _
+        "Desenergização e Completar o Vão"
+
+    textoMenu = "Transformador 01{" & menuTransformador & "}"
+    textoMenu = textoMenu & "|Transformador 02{" & menuTransformador & "}"
+    textoMenu = textoMenu & "|Transformador 03{" & menuTransformador & "}"
+    textoMenu = textoMenu & "|Reator 01{" & menuReator & "}"
+    textoMenu = textoMenu & "|Reator 02{" & menuReator & "}"
+    textoMenu = textoMenu & "|Reator 07{" & menuReator & "}"
+    textoMenu = textoMenu & "|Reator 08{" & menuReator & "}"
+
+    textoMenu = textoMenu & _
+        "|LT 230 kV PGR/PGS{" & _
+        "Energização Sentido Normal Iniciando por PGR|" & _
+        "Energização Sentido Inverso Iniciando por PGS|" & _
+        "Desenergização (ambos sentidos) Iniciando por PGS|" & _
+        "Desenergização (ambos sentidos) Iniciando por PGR}"
+
+    textoMenu = textoMenu & _
+        "|LT 230 kV PGR/SMS{" & _
+        "Energização Sentido Normal Iniciando por PGR|" & _
+        "Energização Sentido Inverso Iniciando por SMS|" & _
+        "Desenergização (ambos sentidos) Iniciando por SMS|" & _
+        "Desenergização (ambos sentidos) Iniciando por PGR}"
+
+    textoMenu = textoMenu & _
+        "|LT 230 kV IRN/PGR C2{" & _
+        "Energização Sentido Normal Iniciando por IRN|" & _
+        "Energização Sentido Inverso Iniciando por PGR|" & _
+        "Desenergização Sentido Normal Iniciando por PGR|" & _
+        "Desenergização Sentido Inverso Iniciando por IRN}"
+
+    textoMenu = textoMenu & _
+        "|LT 230 kV IVP/PGR C1{" & _
+        "Energização Sentido Normal Iniciando por IVP|" & _
+        "Energização Sentido Inverso Iniciando por PGR|" & _
+        "Desenergização (ambos sentidos) Iniciando por PGR|" & _
+        "Desenergização (ambos sentidos) Iniciando por IVP}"
+
+    textoMenu = textoMenu & _
+        "|LT 525 kV IVP/PGR C2{" & _
+        "Energização Sentido Normal Iniciando por IVP|" & _
+        "Energização Sentido Inverso Iniciando por PGR|" & _
+        "Desenergização (ambos sentidos) Iniciando por PGR|" & _
+        "Desenergização (ambos sentidos) Iniciando por IVP}"
+
+    textoMenu = textoMenu & _
+        "|LT 525 kV BTA/PGR C1{" & _
+        "Energização Sentido Normal Iniciando por PGR|" & _
+        "Energização Sentido Inverso Iniciando por BTA|" & _
+        "Desenergização (ambos sentidos) Iniciando por BTA|" & _
+        "Desenergização (ambos sentidos) Iniciando por PGR}"
+
+    textoMenu = textoMenu & _
+        "|LT 525 kV BTA/PGR C2{" & _
+        "Energização Sentido Normal Iniciando por PGR|" & _
+        "Energização Sentido Inverso Iniciando por BTA|" & _
+        "Desenergização (ambos sentidos) Iniciando por BTA|" & _
+        "Desenergização (ambos sentidos) Iniciando por PGR}"
+
+    textoMenu = textoMenu & _
+        "|Bypass{" & _
+        "Disjuntor 722 - Bypass e Isolação|" & _
+        "Disjuntor 722 - Retorno Bypass||" & _
+        "Disjuntor 742 - Bypass e Isolação|" & _
+        "Disjuntor 742 - Retorno Bypass||" & _
+        "Disjuntor 752 - Bypass e Isolação|" & _
+        "Disjuntor 752 - Retorno Bypass||" & _
+        "Disjuntor 732 - Bypass e Isolação|" & _
+        "Disjuntor 732 - Retorno Bypass||" & _
+        "Disjuntor 762 - Bypass e Isolação|" & _
+        "Disjuntor 762 - Retorno Bypass||" & _
+        "Disjuntor 792 - Bypass e Isolação|" & _
+        "Disjuntor 792 - Retorno Bypass}"
+
+    MontarMenuPowerDoc = textoMenu
+End Function
+
+
+' ============================================================================
+' 03 | DOCUMENTOS: NUMERO DO MENU -> ID///TITULO
+' IDs e titulos sao literais: nao deduzir pelo nome exibido no menu.
+' ============================================================================
+
+Function ObterArgumentoPowerDoc(ByVal menu)
+
+    Select Case menu
+        ' Transformador 01
+        Case 1
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-49///Transformador 1 - Energização em Sentido Normal Iniciando pelo 500 kV"
+        Case 2
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-54///Transformador 1 - Energização em Sentido Inverso Iniciando pelo 230 kV"
+        Case 3
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-61///Transformador 1 - Desenergização (em ambos os sentidos) Iniciando pelo 230kV"
+        Case 4
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-66///Transformador 1 - Desenergização (em ambos os sentidos) Iniciando pelo 500kV"
+
+        ' Transformador 02
+        Case 5
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-50///Transformador 2 - Energização em Sentido Normal Iniciando pelo 500 kV"
+        Case 6
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-55///Transformador 2 - Energização em Sentido Inverso Iniciando pelo 230 kV"
+        Case 7
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-62///Transformador 2 - Desenergização (em ambos os sentidos) Iniciando pelo 230kV"
+        Case 8
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-67///Transformador 2 - Desenergização (em ambos os sentidos) Iniciando pelo 500kV"
+
+        ' Transformador 03
+        Case 9
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-51///Transformador 3 - Energização em Sentido Normal Iniciando pelo 500 kV"
+        Case 10
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-56///Transformador 3 - Energização em Sentido Inverso Iniciando pelo 230 kV"
+        Case 11
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-63///Transformador 3 - Desenergização (em ambos os sentidos) Iniciando pelo 230kV"
+        Case 12
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-68///Transformador 3 - Desenergização (em ambos os sentidos) Iniciando pelo 500kV"
+
+        ' Reator 01
+        Case 13
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-72///Reator 1 - Energização Vão Aberto"
+        Case 14
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-73///Reator 1 - Energização Vão Completo"
+        Case 15
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-78///Reator 1 - Desenergização"
+        Case 16
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-79///Reator 1 - Desenergização e Completar o Vão"
+
+        ' Reator 02
+        Case 17
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-75///Reator 2 - Energização Vão Aberto"
+        Case 18
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-76///Reator 2 - Energização Vão Completo"
+        Case 19
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-81///Reator 2 - Desenergização"
+        Case 20
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-15-82///Reator 2 - Desenergização e Completar o Vão"
+
+        ' Reator 07
+        Case 21
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-19-77///Reator 7 - Energização Vão Aberto"
+        Case 22
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-19-78///Reator 7 - Energização Vão Completo"
+        Case 23
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-19-89///Reator 7 - Desenergização"
+        Case 24
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-19-90///Reator 7 - Desenergização e Completar o Vão"
+
+        ' Reator 08
+        Case 25
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-19-80///Reator 8 - Energização Vão Aberto"
+        Case 26
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-19-81///Reator 8 - Energização Vão Completo"
+        Case 27
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-19-92///Reator 8 - Desenergização"
+        Case 28
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0001-19-93///Reator 8 - Desenergização e Completar o Vão"
+
+        ' LT 230 kV PGR/PGS
+        Case 29
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0004-12-5///LT 230 kV PGR/PGS - Energização (em Sentido Normal) Iniciando por PGR"
+        Case 30
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0004-12-8///LT 230 kV PGR/PGS - Energização (em Sentido Inverso) Inverso por PGS"
+        Case 31
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0004-12-11///LT 230 kV PGR/PGS - Desenergização (em ambos os sentidos) Iniciando por PGS"
+        Case 32
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0004-12-12///LT 230 kV PGR/PGS - Desenergização (em ambos os sentidos) Iniciando por PGR"
+
+        ' LT 230 kV PGR/SMS
+        Case 33
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0003-13-5///LT 230 kV PGR/SMS - Energização (em Sentido Normal) Iniciando por PGR"
+        Case 34
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0003-13-8///LT 230 kV PGR/SMS - Energização (em Sentido Inverso) Iniciando por SMS"
+        Case 35
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0003-13-11///LT 230 kV PGR/SMS - Desenergização (em ambos os sentidos) Iniciando por SMS"
+        Case 36
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0003-13-12///LT 230 kV PGR/SMS - Desenergização (em ambos os sentidos) Iniciando por PGR"
+
+        ' LT 230 kV IRN/PGR C2
+        Case 37
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0012-6-5///LT 230 kV IRN/PGR C2 - Energização (em Sentido Normal) Iniciando por IRN"
+        Case 38
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0012-6-8///LT 230 kV IRN/PGR C2 - Energização (em Sentido Inverso) Iniciando por PGR"
+        Case 39
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0012-6-11///LT 230 kV IRN/PGR C2 - Desenergização Sentido Normal Iniciando por PGR"
+        Case 40
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0012-6-12///LT 230 kV IRN/PGR C2 - Desenergização Sentido Inverso Iniciando por IRN"
+
+        ' LT 230 kV IVP/PGR C1
+        Case 41
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0009-18-7///LT 230 kV IVP/PGR C1 - Energização (em Sentido Normal) Iniciando por IVP"
+        Case 42
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0009-18-10///LT 230 kV IVP/PGR C1 - Energização (em Sentido Inverso) Iniciando por PGR"
+        Case 43
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0009-18-13///LT 230 kV IVP/PGR C1 - Desenergização (em ambos os sentidos) Iniciando por PGR"
+        Case 44
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0009-18-14///LT 230 kV IVP/PGR C1 - Desenergização (em ambos os sentidos) Iniciando por IVP"
+
+        ' LT 525 kV IVP/PGR C2
+        Case 45
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0007-22-7///LT 230 kV IVP/PGR C2 - Energização (em Sentido Normal) Iniciando por IVP"
+        Case 46
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0007-22-10///LT 230 kV IVP/PGR C2 - Energização (em Sentido Inverso) Iniciando por PGR"
+        Case 47
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0007-22-13///LT 230 kV IVP/PGR C2 - Desenergização (em ambos os sentidos) Iniciando por PGR"
+        Case 48
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0007-22-14///LT 230 kV IVP/PGR C2 - Desenergização (em ambos os sentidos) Iniciando por IVP"
+
+        ' LT 525 kV BTA/PGR C1
+        Case 49
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0008-14-5///LT 230 kV BTA/PGR C1 - Energização (em Sentido Normal) Iniciando por PGR"
+        Case 50
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0008-14-8///LT 230 kV BTA/PGR C1 - Energização (em Sentido Inverso) Iniciando por BTA"
+        Case 51
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0008-14-11///LT 230 kV BTA/PGR C1 - Desenergização (em ambos os sentidos) Iniciando por BTA"
+        Case 52
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0008-14-12///LT 230 kV BTA/PGR C1 - Desenergização (em ambos os sentidos) Iniciando por PGR"
+
+        ' LT 525 kV BTA/PGR C2
+        Case 53
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0010-14-5///LT 230 kV BTA/PGR C2 - Energização (em Sentido Normal) Iniciando por PGR"
+        Case 54
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0010-14-8///LT 230 kV BTA/PGR C2 - Energização (em Sentido Inverso) Iniciando por BTA"
+        Case 55
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0010-14-11///LT 230 kV BTA/PGR C2 - Desenergização (em ambos os sentidos) Iniciando por BTA"
+        Case 56
+            ObterArgumentoPowerDoc = "IT-OP-TEGA-0010-14-12///LT 230 kV BTA/PGR C2 - Desenergização (em ambos os sentidos) Iniciando por PGR"
+
+        ' Bypass
+        Case 57
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0002-1-13///Disjuntor 722 - Bypass e Isolação"
+        Case 58
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0002-1-14///Disjuntor 722 - Retorno Bypass"
+        Case 59
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0002-1-16///Disjuntor 742 - Bypass e Isolação"
+        Case 60
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0002-1-17///Disjuntor 742 - Retorno Bypass"
+        Case 61
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0002-1-19///Disjuntor 752 - Bypass e Isolação"
+        Case 62
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0002-1-20///Disjuntor 752 - Retorno Bypass"
+        Case 63
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0002-1-22///Disjuntor 732 - Bypass e Isolação"
+        Case 64
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0002-1-23///Disjuntor 732 - Retorno Bypass"
+        Case 65
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0002-1-25///Disjuntor 762 - Bypass e Isolação"
+        Case 66
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0002-1-26///Disjuntor 762 - Retorno Bypass"
+        Case 67
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0002-1-28///Disjuntor 792 - Bypass e Isolação"
+        Case 68
+            ObterArgumentoPowerDoc = "IT-OP-PGR-0002-1-29///Disjuntor 792 - Retorno Bypass"
+
+        Case Else
+            ' Sem opcao reconhecida: retorna Empty e o evento encerra.
+            Exit Function
+    End Select
+End Function
+
+
+' ============================================================================
+' 04 | ABERTURA E POSICIONAMENTO DA TELA
+' Preserva chamadas, formulas, flags e o alcance do On Error Resume Next.
+' ============================================================================
+
+Sub AbrirTelaPowerDoc(ByVal Arg, ByVal calcTela)
+    Dim v_a_screen, v_a_Titulo, v_a_flags
+    Dim newPosX, newPosY, mouseX, mouseY, popWidth, popHeight
+    Dim scrWidth, scrHeight, monitorID, screenParam, SCR, FRM
+
+    v_a_screen = Trim("POP.SYS.pop_17_Power_Doc")
+
+    If v_a_screen <> "" Then
+
+        If Left(v_a_screen, 3) = "SCR" Then
+            'Abertura de tela
+            Application.GetFrame("div_Body").OpenScreen v_a_screen & "?100?0", 0
+        Else
+            'Abertura de popup
+            On Error Resume Next
+            screenParam = Split(v_a_screen, "?", -1, 1)
+
+            Set SCR = Application.GetScreen(screenParam(0))
+            v_a_Titulo = Application.Item("SCR").Item("tag_0_Plant").Value & "-" & Application.Item("SCR").Item("tag_1_Unit").Value
+            v_a_flags = 1 + 2 + 16 + 64 + 256
+            Set FRM = Application.GetFrame(Replace(v_a_screen, "?", "_"))
+            FRM.SetFrameOptions v_a_Titulo, v_a_flags
+
+            mouseX = Application.GetMouseX()
+            mouseY = Application.GetMouseY()
+            scrWidth = Application.WindowWidth
+            scrHeight = Application.WindowHeight
+            popWidth = SCR.Width * 96 / 2540 + 17
+            popHeight = calcTela * 96 / 2540 + 40
+
+            'Definição de qual monitor ocorreu a chamada de popup
+            monitorID = CInt((mouseX / scrWidth) + 0.5)
+
+            'Posição centralizada conforme as fórmulas originais.
+            newPosX = ((monitorID * scrWidth) - popWidth) / 2
+
+            'Definição da posição Y da abertura de popup
+            newPosY = (scrHeight - popHeight) / 2
+
+            FRM.MoveFrame newPosX, newPosY, popWidth, popHeight
+            FRM.ShowScreen SCR, 100, 0, Arg
+            FRM.SetFrameOptions v_a_Titulo, v_a_flags
+            Set FRM = Nothing
+            Set SCR = Nothing
+            On Error Goto 0
+
+        End If
+    End If
+End Sub
+
+
+' ============================================================================
+' 05 | CONSULTA HTTP E DIMENSAO DA POPUP
+' Duas consultas sincronas, com os mesmos timeouts e mensagens do original.
+' ============================================================================
 
 Function TamanhoTela(Arg)
 
-	'Leitura do ID
-	Dim oJsonParser, powerDocServerAddress
-	
-	aDocID = split(Arg, "///")
+    ' 05.01 | Obter o ID atualizado do documento a partir da tag.
+    Dim oJsonParser, aDocID, idUpdated, aj_XmlHttp
+    Dim powerDocServerAddressToGetID, powerDocServerAddressToGetInstruction
 
-	'reading the ID
-	powerDocServerAddressToGetID = "http://middleware-powerdocs.ds55.local/integrations/v1/sharing?tag=" & aDocID(0)
-  	Set oJsonParser = new aspJSON
-	
-	Set aj_XmlHttp = CreateObject("MSXML2.ServerXMLHTTP")
-    aj_XmlHttp.open "GET", powerDocServerAddressToGetID, False
-	aj_XmlHttp.setTimeouts 5000, 5000, 5000, 5000    
-    aj_XmlHttp.setRequestHeader "Content-Type", "application/json"
-    aj_XmlHttp.setRequestHeader "Authorization", "Basic ZWxpcHNlOkJ2Y0VtcnJ4UVphWG9iaVg3ZEI0alhnS0VEdXFuOHREYXlBNlpxZElpL3ZOajdZdQ=="
-    aj_XmlHttp.Send
-    
-    'Msgbox aj_XmlHttp.Status
+    aDocID = Split(Arg, "///")
+
+    powerDocServerAddressToGetID = "http://middleware-powerdocs.ds55.local/integrations/v1/sharing?tag=" & aDocID(0)
+    Set oJsonParser = New aspJSON
+
+    Set aj_XmlHttp = CriarRequisicaoPowerDoc(powerDocServerAddressToGetID)
+
     If aj_XmlHttp.Status <> 200 Then
-    	Msgbox "Erro "& aj_XmlHttp.Status& " na requisição do ID."
-    	Exit Function
-    End If    
-      
+        MsgBox "Erro " & aj_XmlHttp.Status & " na requisição do ID."
+        Exit Function
+    End If
+
     oJsonParser.LoadJSONString aj_XmlHttp.responseText
     idUpdated = oJsonParser.data("content").Item(0).Item("id")
-    
-    
-    'reading the instruction
-    powerDocServerAddressToGetInstruction = "http://middleware-powerdocs.ds55.local/integrations/v1/sharing/"&idUpdated&"/content"
-    Set aj_XmlHttp = CreateObject("MSXML2.ServerXMLHTTP")
-	aj_XmlHttp.open "GET", powerDocServerAddressToGetInstruction, False
-	aj_XmlHttp.setTimeouts 5000, 5000, 5000, 5000
-	aj_XmlHttp.setRequestHeader "Content-Type", "application/json"
-    aj_XmlHttp.setRequestHeader "Authorization", "Basic ZWxpcHNlOkJ2Y0VtcnJ4UVphWG9iaVg3ZEI0alhnS0VEdXFuOHREYXlBNlpxZElpL3ZOajdZdQ=="
-	aj_XmlHttp.Send
-	
-	'Msgbox aj_XmlHttp.Status
-	If aj_XmlHttp.Status <> 200 Then
-	    Msgbox "Erro "& aj_XmlHttp.Status& " na requisição do ID."
-	    Exit Function
-	End If
-	
-	oJsonParser.LoadJSONString aj_XmlHttp.responseText              
-	TamanhoTela = ((oJsonParser.data("rows").Count+1)*1200) + 200
 
+    ' 05.02 | Obter as linhas e calcular a altura nas unidades do Elipse.
+    powerDocServerAddressToGetInstruction = _
+        "http://middleware-powerdocs.ds55.local/integrations/v1/sharing/" & _
+        idUpdated & "/content"
+    Set aj_XmlHttp = CriarRequisicaoPowerDoc(powerDocServerAddressToGetInstruction)
+
+    If aj_XmlHttp.Status <> 200 Then
+        MsgBox "Erro " & aj_XmlHttp.Status & " na requisição do ID."
+        Exit Function
+    End If
+
+    oJsonParser.LoadJSONString aj_XmlHttp.responseText
+    TamanhoTela = ((oJsonParser.data("rows").Count + 1) * 1200) + 200
 End Function
-'_________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+
+Function CriarRequisicaoPowerDoc(ByVal endereco)
+    Dim requisicao
+
+    Set requisicao = CreateObject("MSXML2.ServerXMLHTTP")
+    requisicao.Open "GET", endereco, False
+    requisicao.setTimeouts 5000, 5000, 5000, 5000
+    requisicao.setRequestHeader "Content-Type", "application/json"
+    requisicao.setRequestHeader "Authorization", "Basic ZWxpcHNlOkJ2Y0VtcnJ4UVphWG9iaVg3ZEI0alhnS0VEdXFuOHREYXlBNlpxZElpL3ZOajdZdQ=="
+    requisicao.Send
+
+    Set CriarRequisicaoPowerDoc = requisicao
+End Function
+
+
+' ============================================================================
+' 06 | INFRAESTRUTURA: PARSER JSON
+' Classe aspJSON preservada integralmente para manter as conversoes existentes.
+' ============================================================================
 
 Class aspJSON
 	Public data
@@ -668,7 +743,11 @@ Public Sub LoadJSONString(ByVal JSONString)
     Next
 End Sub
 End Class
-'_________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
-Sub Vazia()	
+
+' ============================================================================
+' 07 | ROTINA VAZIA
+' ============================================================================
+
+Sub Vazia()
 End Sub
