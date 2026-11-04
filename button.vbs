@@ -3,8 +3,22 @@
 ' Contrato: mesma ordem do menu, argumentos ID///titulo e chamadas ao Elipse.
 ' ============================================================================
 
-' 01 evento do botao e menu literal; 02 IDs e titulos; 03 abertura da tela;
-' 04 consulta e dimensao; 05 parser JSON; 06 rotina Vazia.
+' ESQUELETO DO CODIGO (NA ORDEM DO ARQUIVO)
+' 01 | button_Click
+'      Exibe o SelectMenu literal, identifica o documento, consulta a altura
+'      e solicita a abertura da tela; encerra se nao houver selecao ou altura.
+' 02 | ObterArgumentoPowerDoc
+'      Converte o numero da opcao em ID///titulo do documento.
+' 03 | AbrirTelaPowerDoc
+'      Abre a tela ou popup e define titulo, flags, dimensoes e posicao.
+' 04 | TamanhoTela / CriarRequisicaoPowerDoc
+'      Consulta o ID e o conteudo para calcular a altura; a funcao auxiliar
+'      configura e envia cada GET sincrono com os headers e timeouts.
+' 05 | aspJSON
+'      Interpreta as respostas JSON para acesso aos dados do documento.
+' 06 | Vazia
+'      Rotina sem implementacao.
+'
 ' Para manter as opcoes, edite os blocos 01 e 02 em conjunto: SelectMenu
 ' numera as 68 opcoes pela ordem de exibicao; || separa itens do Bypass.
 

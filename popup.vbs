@@ -6,6 +6,24 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
 ' O texto das instrucoes e mantido no PowerDoc; o menu e os IDs dos documentos
 ' ficam em button.vbs. Aqui sao mantidos o reconhecimento, os valores e as tags.
 '
+' ESQUELETO DO CODIGO (NA ORDEM DO ARQUIVO)
+' 01 | xc_PowerDoc_OnF_B_ConfigChanged
+'      Valida o disparo e DocID, consulta o PowerDoc, interpreta cada linha
+'      e monta textos, checks, mensagem de autonomia e dimensoes da tela.
+' 02 | ExtrairInstrucao
+'      Aplica as regras por prioridade e retorna os dados da instrucao.
+' 03 | Extrair* / Normalizar* / CodigoOperadorPowerDoc / NovoRegExp
+'      Extrai referencias e locais, normaliza nomes e prepara operadores
+'      e expressoes regulares usados pelas regras.
+' 04 | ObterTag*: resolve as tags SCADA conforme equipamento e subestacao.
+'      04.01 disjuntores; 04.02 potencia/religamento IVP;
+'      04.03 PSD/diferenca angular PGR; 04.04 potencia IRN;
+'      04.05 tensao de barras; 04.06 estado N-1.
+' 05 | aspJSON
+'      Interpreta as respostas JSON para acesso aos dados do documento.
+' 06 | Vazia
+'      Rotina sem implementacao.
+'
 ' EDITAR UMA INSTRUCAO JA PREVISTA
 ' 1. Localize a regra no bloco 02, pela ordem abaixo:
 '    02.01 abrir/fechar disjuntor; 02.02 sistema completo/N-1;
@@ -62,9 +80,6 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
 ' numeros compartilhados entre SEs, operador, referencia e caminho da tag.
 ' Valide no Elipse o texto e o check resultantes apos cada alteracao.
 '
-' MAPA DO ARQUIVO
-' 01 evento principal (HTTP, texto e checks); 02 regras por prioridade;
-' 03 extracao e normalizacao; 04 tags por SE; 05 parser JSON; 06 rotina Vazia.
 
 ' ============================================================================
 ' 01 | EVENTO PRINCIPAL
