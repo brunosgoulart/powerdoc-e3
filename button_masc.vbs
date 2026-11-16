@@ -1,9 +1,36 @@
+' ============================================================================
 ' POWERDOC | SELECAO DO DOCUMENTO E ABERTURA DA TELA
+' Contrato: mesma ordem do menu, argumentos ID///titulo e chamadas ao Elipse.
 ' Menu e argumentos preservados do script original.
+' ============================================================================
+
+' ESQUELETO DO CODIGO (NA ORDEM DO ARQUIVO)
+' 01 | button_Click
+'      Exibe o SelectMenu literal, identifica o documento, consulta a altura
+'      e solicita a abertura da tela; encerra se nao houver selecao ou altura.
+' 02 | ObterArgumentoPowerDoc
+'      Converte o numero da opcao em ID///titulo do documento.
+' 03 | AbrirTelaPowerDoc
+'      Abre a tela ou popup e define titulo, flags, dimensoes e posicao.
+' 04 | TamanhoTela / CriarRequisicaoPowerDoc
+'      Consulta o ID e o conteudo para calcular a altura; a funcao auxiliar
+'      configura e envia cada GET sincrono com os headers e timeouts.
+' 05 | aspJSON
+'      Interpreta as respostas JSON para acesso aos dados do documento.
+' 06 | Vazia
+'      Rotina sem implementacao.
+'
+' Para manter as opcoes, edite os blocos 01 e 02 em conjunto: SelectMenu
+' numera as 8 opcoes pela ordem de exibicao.
+
+' ============================================================================
+' 01 | EVENTO DO BOTAO
+' ============================================================================
 
 Sub button_Click()
     Dim menu, Arg, calcTela
 
+    ' Menu literal: todos os grupos, itens e separadores ficam visiveis aqui.
     menu = "Transformador 8TR-2{" & _
         "Energização Sentido Normal Iniciando pelo 138 kV|" & _
         "Energização Sentido Inverso Iniciando pelo 230 kV|" & _
@@ -23,8 +50,14 @@ Sub button_Click()
     AbrirTelaPowerDoc Arg, calcTela
 End Sub
 
+' ============================================================================
+' 02 | DOCUMENTOS: NUMERO DO MENU -> ID///TITULO
+' IDs e titulos sao literais: nao deduzir pelo nome exibido no menu.
+' ============================================================================
+
 Function ObterArgumentoPowerDoc(ByVal menu)
     Select Case menu
+        ' Transformador 8TR-2
         Case 1
             ObterArgumentoPowerDoc = "IT-OP-MASC-0001-3-38///Transformador 8TR-2 - Energização em Sentido Normal Iniciando pelo 138 kV"
         Case 2
@@ -33,6 +66,7 @@ Function ObterArgumentoPowerDoc(ByVal menu)
             ObterArgumentoPowerDoc = "IT-OP-MASC-0001-3-46///Transformador 8TR-2 - Desenergização (em ambos os sentidos) Iniciando pelo 138kV"
         Case 4
             ObterArgumentoPowerDoc = "IT-OP-MASC-0001-3-49///Transformador 8TR-2 - Desenergização (em ambos os sentidos) Iniciando pelo 230kV"
+        ' LT 230 kV AISE/MASC C1
         Case 5
             ObterArgumentoPowerDoc = "IT-OP-TEGN-0003-2-5///LT 230 kV AISE/MASC C1 - Energização (em Sentido Normal) Iniciando por AISE"
         Case 6
@@ -42,10 +76,16 @@ Function ObterArgumentoPowerDoc(ByVal menu)
         Case 8
             ObterArgumentoPowerDoc = "IT-OP-TEGN-0003-2-12///LT 230 kV AISE/MASC C1 - Desenergização (em ambos os sentidos) Iniciando por AISE"
         Case Else
+            ' Sem opcao reconhecida: retorna Empty e o evento encerra.
             Exit Function
     End Select
 End Function
 
+
+' ============================================================================
+' 03 | ABERTURA E POSICIONAMENTO DA TELA
+' Preserva chamadas, formulas, flags e o alcance do On Error Resume Next.
+' ============================================================================
 
 Sub AbrirTelaPowerDoc(ByVal Arg, ByVal calcTela)
     Dim v_a_screen, v_a_Titulo, v_a_flags
