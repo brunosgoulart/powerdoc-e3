@@ -167,7 +167,7 @@ Function TamanhoTela(Arg)
     End If
 
     oJsonParser.LoadJSONString aj_XmlHttp.responseText
-    TamanhoTela = ((oJsonParser.data("rows").Count + 1) * 1200) + 200
+    TamanhoTela = ((oJsonParser.data("rows").Count + 2) * 1200) + 800
 End Function
 
 

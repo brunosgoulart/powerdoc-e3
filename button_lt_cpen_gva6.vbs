@@ -1,3 +1,4 @@
+Sub button_Click()
 ' ============================================================================
 ' POWERDOC | SELECAO DO DOCUMENTO E ABERTURA DA TELA
 ' Contrato: mesma ordem do menu, argumentos ID///titulo e chamadas ao Elipse.
@@ -26,8 +27,8 @@
 ' 01 | EVENTO DO BOTAO
 ' ============================================================================
 
-Sub button_Click()
     Dim menu, Arg, calcTela
+
     ' Menu literal: todos os grupos, itens e separadores ficam visiveis aqui.
     menu = Application.SelectMenu( _
         "|LT 230 kV CPEN/GVA6{" & _
@@ -36,12 +37,16 @@ Sub button_Click()
             "Desenergização Sentido Normal Iniciando por CPEN|" & _
             "Desenergização Sentido Inverso Iniciando por GVA6}" _
     )
+
     Arg = ObterArgumentoPowerDoc(menu)
     If Arg = "" Then Exit Sub
+
     calcTela = TamanhoTela(Arg)
     If calcTela = "" Then Exit Sub
+
     AbrirTelaPowerDoc Arg, calcTela
 End Sub
+
 
 ' ============================================================================
 ' 02 | DOCUMENTOS: NUMERO DO MENU -> ID///TITULO
@@ -49,6 +54,7 @@ End Sub
 ' ============================================================================
 
 Function ObterArgumentoPowerDoc(ByVal menu)
+
     Select Case menu
         ' LT 230 kV CPEN/GVA6
         Case 1
@@ -59,11 +65,13 @@ Function ObterArgumentoPowerDoc(ByVal menu)
             ObterArgumentoPowerDoc = "IT-OP-TEGN-0005-2-11///LT 230 kV CPEN/GVA6 - Desenergização Sentido Normal Iniciando por CPEN"
         Case 4
             ObterArgumentoPowerDoc = "IT-OP-TEGN-0005-2-12///LT 230 kV CPEN/GVA6 - Desenergização Sentido Inverso Iniciando por GVA6"
+
         Case Else
             ' Sem opcao reconhecida: retorna Empty e o evento encerra.
             Exit Function
     End Select
 End Function
+
 
 ' ============================================================================
 ' 03 | ABERTURA E POSICIONAMENTO DA TELA
@@ -154,12 +162,12 @@ Function TamanhoTela(Arg)
     Set aj_XmlHttp = CriarRequisicaoPowerDoc(powerDocServerAddressToGetInstruction)
 
     If aj_XmlHttp.Status <> 200 Then
-        MsgBox "Erro " & aj_XmlHttp.Status & " na requisição do ID."
+        MsgBox "Erro " & aj_XmlHttp.Status & " na requisição das instruções."
         Exit Function
     End If
 
     oJsonParser.LoadJSONString aj_XmlHttp.responseText
-    TamanhoTela = ((oJsonParser.data("rows").Count + 1) * 1200) + 200
+    TamanhoTela = ((oJsonParser.data("rows").Count + 2) * 1200) + 800
 End Function
 
 

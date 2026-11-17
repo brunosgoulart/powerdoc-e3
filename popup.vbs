@@ -166,16 +166,26 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
 
         ' 01.06.a | Texto da instrucao
         Set texto = scr.AddObject( _
-            "cot-xclib-txt.xc_TXT_09", _
+            "Panel.DrawString", _
             True, _
             "texto00" _
         )
 
-        texto.P_S_TXT = "- " & instrucao
+        texto.Value = instrucao
         texto.X = "900"
         texto.Y = (i + 1) * 1200
-        texto.Width = "21000"
+        ' Reservar 900 a esquerda para o check e 300 a direita.
+        texto.Width = scr.Width - 1200
         texto.Height = "1200"
+        texto.Multiline = True
+        texto.WordWrap = True
+        texto.StretchText = False
+        texto.TextAlignment = 0
+        texto.VertTextAlignment = 1
+        texto.TextFont.Name = "Arial"
+        texto.TextFont.Size = 10
+        texto.TextFont.Bold = False
+        texto.TextColor = RGB(90, 90, 90)
         texto.BringToFront()
 
         ' 01.06.b | Check somente quando referencia, tag e operador existem
@@ -193,7 +203,8 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
                 CInt(resultadoExtracao("operador_check"))
 
             check.X = "300"
-            check.Y = ((i + 1) * 1200) + 360
+            ' Centralizar o icone pela altura real na mesma faixa do texto.
+            check.Y = texto.Y + (texto.Height - check.Height) / 2
             check.param_PowerDoc = _
                 CDbl(resultadoExtracao("referencia_valor"))
 
@@ -214,23 +225,35 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
     mensagemAutonomia = "Sem autonomia para recompor"
 
     Set textoAutonomia = scr.AddObject( _
-        "cot-xclib-txt.xc_TXT_09", _
+        "Panel.DrawString", _
         True, _
         "autonomia00" _
     )
 
-    textoAutonomia.P_S_TXT = mensagemAutonomia
+    textoAutonomia.Value = mensagemAutonomia
     textoAutonomia.X = "900"
     textoAutonomia.Y = (rows + 1) * 1200
-    textoAutonomia.Width = "19500"
+    textoAutonomia.Width = scr.Width - 1200
     textoAutonomia.Height = "1200"
+    textoAutonomia.Multiline = True
+    textoAutonomia.WordWrap = True
+    textoAutonomia.StretchText = False
+    textoAutonomia.TextAlignment = 0
+    textoAutonomia.VertTextAlignment = 1
+    textoAutonomia.TextFont.Name = "Arial"
+    textoAutonomia.TextFont.Size = 10
+    textoAutonomia.TextFont.Bold = False
+    textoAutonomia.TextColor = RGB(90, 90, 90)
     textoAutonomia.BringToFront()
 
     ' ------------------------------------------------------------------------
     ' 01.08 | Dimensoes da tela, margem e cabecalho
     ' ------------------------------------------------------------------------
+    ' Mesma altura calculada em TamanhoTela nos botoes: autonomia e rodape.
+    scr.Height = ((rows + 2) * 1200) + 800
+
     margem.Width = scr.Width
-    margem.Height = ((rows + 2) * 1200) + 800
+    margem.Height = scr.Height
 
     cabecalho.Width = scr.Width
 
@@ -335,7 +358,7 @@ Function ExtrairInstrucao(ByVal frase, ByVal contextoOperacional)
         Exit Function
     End If
 
-    ' N-1: sempre individual por subestacao.
+    ' N-1: individual por subestacao e, em PGR, por grupo de barras.
     ' ------------------------------------------------------------------------
     ' 02.02 | REGRA 2: sistema completo / N-1 | IVP, IRN e PGR
     ' ------------------------------------------------------------------------
@@ -358,7 +381,10 @@ Function ExtrairInstrucao(ByVal frase, ByVal contextoOperacional)
         info("operador_check") = 3
         info("referencia_valor") = "1"
         info("referencia_estado") = "N-1 atendido"
-        info("tag_gpe") = ObterTagCLCN1(info("local"))
+        info("tag_gpe") = ObterTagCLCN1( _
+            info("local"), _
+            info("equipamento") _
+        )
 
         If info("tag_gpe") <> "" Then
             Set ExtrairInstrucao = info
@@ -1007,25 +1033,33 @@ End Function
 
 ' ============================================================================
 ' 04.06 | LEITURAS COMPARTILHADAS: N-1
-' Reconhecimento original da subestacao preservado.
+' Reconhecimento da subestacao preservado; em PGR, selecionar BR07/BR10.
 ' ============================================================================
 
-Function ObterTagCLCN1(ByVal local)
+Function ObterTagCLCN1(ByVal local, ByVal equipamento)
 
     ' ------------------------------------------------------------------------
     ' 04.06 | N-1: ordem de reconhecimento IVP -> IRN -> PGR
     ' ------------------------------------------------------------------------
     If InStr(UCase(local), "IVAIPOR") > 0 Then
-        ObterTagCLCN1 = "CLC.IVP.CLC.IVP.N1.ATENDIDO"
+        ObterTagCLCN1 = "CLC.IVP.CLC.IVP.N1.BR10.N1_Atendido"
 
     ElseIf InStr(UCase(local), "IRATI NORTE") > 0 Or _
            InStr(UCase(local), "SE IRN") > 0 Then
-        ObterTagCLCN1 = "CLC.IRN.CLC.IRN.N1.ATENDIDO"
+        ObterTagCLCN1 = "CLC.IRN.CLC.IRN.N1.BR07.N1_Atendido"
 
     ElseIf InStr(UCase(local), "PONTA GROSSA") > 0 Or _
            InStr(UCase(local), "SE PGR") > 0 Then
-        ObterTagCLCN1 = _
-            "CLC.PGR.CLC.PGR.LT_PGR_PGS.LT_PGR_PGS_N1_ATENDIDO"
+        Select Case UCase(Trim(equipamento))
+            Case "BARRA BR07BA", "BARRA BR07BB"
+                ObterTagCLCN1 = "CLC.PGR.CLC.PGR.N1.BR07.N1_Atendido"
+
+            Case "BARRA BR10BA", "BARRA BR10BB"
+                ObterTagCLCN1 = "CLC.PGR.CLC.PGR.N1.BR10.N1_Atendido"
+
+            Case Else
+                ObterTagCLCN1 = ""
+        End Select
 
     Else
         ObterTagCLCN1 = ""

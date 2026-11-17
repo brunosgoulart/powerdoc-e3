@@ -1,3 +1,4 @@
+Sub button_Click()
 ' ============================================================================
 ' POWERDOC | SELECAO DO DOCUMENTO E ABERTURA DA TELA
 ' Contrato: mesma ordem do menu, argumentos ID///titulo e chamadas ao Elipse.
@@ -26,7 +27,7 @@
 ' 01 | EVENTO DO BOTAO
 ' ============================================================================
 
-Sub button_Click()
+
     Dim menu, Arg, calcTela
     ' Menu literal: todos os grupos, itens e separadores ficam visiveis aqui.
     menu = Application.SelectMenu( _
@@ -159,7 +160,7 @@ Function TamanhoTela(Arg)
     End If
 
     oJsonParser.LoadJSONString aj_XmlHttp.responseText
-    TamanhoTela = ((oJsonParser.data("rows").Count + 1) * 1200) + 200
+    TamanhoTela = ((oJsonParser.data("rows").Count + 2) * 1200) + 800
 End Function
 
 

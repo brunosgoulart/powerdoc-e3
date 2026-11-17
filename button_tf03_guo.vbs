@@ -1,15 +1,35 @@
+Sub button_Click()
 ' ============================================================================
 ' POWERDOC | SELECAO DO DOCUMENTO E ABERTURA DA TELA
 ' Contrato: mesma ordem do menu, argumentos ID///titulo e chamadas ao Elipse.
 ' ============================================================================
 
+' ESQUELETO DO CODIGO (NA ORDEM DO ARQUIVO)
+' 01 | button_Click
+'      Exibe o SelectMenu literal, identifica o documento, consulta a altura
+'      e solicita a abertura da tela; encerra se nao houver selecao ou altura.
+' 02 | ObterArgumentoPowerDoc
+'      Converte o numero da opcao em ID///titulo do documento.
+' 03 | AbrirTelaPowerDoc
+'      Abre a tela ou popup e define titulo, flags, dimensoes e posicao.
+' 04 | TamanhoTela / CriarRequisicaoPowerDoc
+'      Consulta o ID e o conteudo para calcular a altura; a funcao auxiliar
+'      configura e envia cada GET sincrono com os headers e timeouts.
+' 05 | aspJSON
+'      Interpreta as respostas JSON para acesso aos dados do documento.
+' 06 | Vazia
+'      Rotina sem implementacao.
+'
+' Para manter as opcoes, edite os blocos 01 e 02 em conjunto: SelectMenu
+' numera as 14 opcoes pela ordem de exibicao.
+
 ' ============================================================================
 ' 01 | EVENTO DO BOTAO
 ' ============================================================================
 
-Sub button_Click()
     Dim menu, Arg, calcTela
 
+	' Menu literal: todos os grupos, itens e separadores ficam visiveis aqui.
     menu = Application.SelectMenu( _
         "Transformador 01{" & _
             "Energização Sentido Normal|" & _
@@ -43,10 +63,13 @@ End Sub
 
 ' ============================================================================
 ' 02 | DOCUMENTOS: NUMERO DO MENU -> ID///TITULO
+' IDs e titulos sao literais: nao deduzir pelo nome exibido no menu.
 ' ============================================================================
 
 Function ObterArgumentoPowerDoc(ByVal menu)
+
     Select Case menu
+		' Transformador 01
         Case 1
             ObterArgumentoPowerDoc = "IT-OP-GUO-0001-14-43///Transformador 01 - Energização (em Sentido Normal)"
         Case 2
@@ -55,6 +78,8 @@ Function ObterArgumentoPowerDoc(ByVal menu)
             ObterArgumentoPowerDoc = "IT-OP-GUO-0001-14-55///Transformador 01 - Desenergização (em ambos os sentidos) Iniciando pelo 138kV"
         Case 4
             ObterArgumentoPowerDoc = "IT-OP-GUO-0001-14-60///Transformador 01 - Desenergização (em ambos os sentidos) Iniciando pelo 230kV"
+
+		' Transformador 02
         Case 5
             ObterArgumentoPowerDoc = "IT-OP-GUO-0001-14-44///Transformador 02 - Energização (em Sentido Normal)"
         Case 6
@@ -63,6 +88,8 @@ Function ObterArgumentoPowerDoc(ByVal menu)
             ObterArgumentoPowerDoc = "IT-OP-GUO-0001-14-56///Transformador 02 - Desenergização (em ambos os sentidos) Iniciando pelo 138kV"
         Case 8
             ObterArgumentoPowerDoc = "IT-OP-GUO-0001-14-61///Transformador 02 - Desenergização (em ambos os sentidos) Iniciando pelo 230kV"
+
+		' Transformador 03
         Case 9
             ObterArgumentoPowerDoc = "IT-OP-GUO-0001-14-45///Transformador 03 - Energização (em Sentido Normal)"
         Case 10
@@ -71,11 +98,15 @@ Function ObterArgumentoPowerDoc(ByVal menu)
             ObterArgumentoPowerDoc = "IT-OP-GUO-0001-14-57///Transformador 03 - Desenergização (em ambos os sentidos) Iniciando pelo 138kV"
         Case 12
             ObterArgumentoPowerDoc = "IT-OP-GUO-0001-14-62///Transformador 03 - Desenergização (em ambos os sentidos) Iniciando pelo 230kV"
+
+		' Reator 01
         Case 13
             ObterArgumentoPowerDoc = "IT-OP-GUO-0001-14-66///Reator 01 - Energização"
         Case 14
             ObterArgumentoPowerDoc = "IT-OP-GUO-0001-14-68///Reator 01 - Desenergização"
+
         Case Else
+			' Sem opcao reconhecida: retorna Empty e o evento encerra.
             Exit Function
     End Select
 End Function
@@ -175,7 +206,7 @@ Function TamanhoTela(Arg)
     End If
 
     oJsonParser.LoadJSONString aj_XmlHttp.responseText
-    TamanhoTela = ((oJsonParser.data("rows").Count + 1) * 1200) + 200
+	TamanhoTela = ((oJsonParser.data("rows").Count + 2) * 1200) + 800
 End Function
 
 
