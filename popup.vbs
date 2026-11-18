@@ -10,6 +10,7 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
 ' 01 | xc_PowerDoc_OnF_B_ConfigChanged
 '      Valida o disparo e DocID, consulta o PowerDoc, interpreta cada linha
 '      e monta textos, checks, mensagem de autonomia e dimensoes da tela.
+'      MontarClausulaAutonomia: comparacao e qualidade para o resumo final.
 ' 02 | ExtrairInstrucao
 '      Aplica as regras por prioridade e retorna os dados da instrucao.
 ' 03 | Extrair* / Normalizar* / CodigoOperadorPowerDoc / NovoRegExp
@@ -103,9 +104,16 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
     Set cabecalho = Item("dwr_8")
 
     Dim oJsonParser, instrucao, resultadoExtracao, contextoOperacional
-    Dim textoAutonomia, mensagemAutonomia
+    Dim textoAutonomia, temCheck, valorReferencia
+    Dim comparacoesAutonomia, qualidadesAutonomia, autonomiaIncompleta
+    Dim comparacao, qualidade
+    Const mensagemRecompor = "Recompor a FT com Autonomia"
+    Const mensagemDisponibilizar = "Disponibilizar a FT com Autonomia"
 
     Set oJsonParser = New aspJSON
+    comparacoesAutonomia = ""
+    qualidadesAutonomia = ""
+    autonomiaIncompleta = False
 
     ' ------------------------------------------------------------------------
     ' 01.03 | HTTP: consultar o ID do documento
@@ -189,9 +197,15 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
         texto.BringToFront()
 
         ' 01.06.b | Check somente quando referencia, tag e operador existem
-        If Trim(CStr(resultadoExtracao("referencia_valor"))) <> "" And _
-           Trim(CStr(resultadoExtracao("tag_gpe"))) <> "" And _
-           resultadoExtracao("operador_check") > 0 Then
+        temCheck = Trim(CStr(resultadoExtracao("referencia_valor"))) <> "" And _
+                   Trim(CStr(resultadoExtracao("tag_gpe"))) <> "" And _
+                   resultadoExtracao("operador_check") > 0
+
+        If temCheck Then
+            ' PowerDoc aceita ponto ou virgula; CDbl usa o locale do Viewer.
+            valorReferencia = CDbl(Replace(Replace( _
+                resultadoExtracao("referencia_valor"), ",", "."), _
+                ".", Mid(CStr(1.5), 2, 1)))
 
             Set check = scr.AddObject( _
                 "cot-xclib-powerdoc.xc_PowerDoc_Check", _
@@ -205,8 +219,7 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
             check.X = "300"
             ' Centralizar o icone pela altura real na mesma faixa do texto.
             check.Y = texto.Y + (texto.Height - check.Height) / 2
-            check.param_PowerDoc = _
-                CDbl(resultadoExtracao("referencia_valor"))
+            check.param_PowerDoc = valorReferencia
 
             Set Bind = check.Links.CreateLink( _
                 "scada_Measurement", _
@@ -216,35 +229,62 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
 
             check.BringToFront()
         End If
+
+        ' 01.06.c | Ignorar manobras de disjuntor, mesmo sem tag mapeada.
+        ' Uma linha nao vazia sem check impede confirmar o conjunto.
+        If resultadoExtracao("tipo") <> "ACAO" And Trim(instrucao) <> "" Then
+            If temCheck Then
+                comparacao = MontarClausulaAutonomia( _
+                    resultadoExtracao, valorReferencia, qualidade)
+                If comparacao = "" Then
+                    autonomiaIncompleta = True
+                Else
+                    If comparacoesAutonomia <> "" Then
+                        comparacoesAutonomia = comparacoesAutonomia & " And "
+                        qualidadesAutonomia = qualidadesAutonomia & " And "
+                    End If
+                    comparacoesAutonomia = comparacoesAutonomia & comparacao
+                    qualidadesAutonomia = qualidadesAutonomia & qualidade
+                End If
+            Else
+                autonomiaIncompleta = True
+            End If
+        End If
     Next
 
     ' ------------------------------------------------------------------------
-    ' 01.07 | Mensagem de autonomia (provisoria, conforme original)
+    ' 01.07 | Resumo informativo das condicoes, sem comando de manobra
     ' ------------------------------------------------------------------------
-    ' Texto provisório; será calculado pela lógica de autonomia futura.
-    mensagemAutonomia = "Sem autonomia para recompor"
-
     Set textoAutonomia = scr.AddObject( _
         "Panel.DrawString", _
         True, _
         "autonomia00" _
     )
 
-    textoAutonomia.Value = mensagemAutonomia
+    textoAutonomia.Value = mensagemDisponibilizar
     textoAutonomia.X = "900"
     textoAutonomia.Y = (rows + 1) * 1200
-    textoAutonomia.Width = scr.Width - 1200
+    ' Margens iguais para centralizar o texto no popup.
+    textoAutonomia.Width = scr.Width - 1800
     textoAutonomia.Height = "1200"
     textoAutonomia.Multiline = True
     textoAutonomia.WordWrap = True
     textoAutonomia.StretchText = False
-    textoAutonomia.TextAlignment = 0
+    textoAutonomia.TextAlignment = 1
     textoAutonomia.VertTextAlignment = 1
     textoAutonomia.TextFont.Name = "Arial"
     textoAutonomia.TextFont.Size = 10
-    textoAutonomia.TextFont.Bold = False
+    textoAutonomia.TextFont.Bold = True
+    textoAutonomia.TextFont.Underline = True
     textoAutonomia.TextColor = RGB(90, 90, 90)
     textoAutonomia.BringToFront()
+
+    ' Recompor somente quando todas as condicoes puderem ser confirmadas.
+    If Not autonomiaIncompleta And comparacoesAutonomia <> "" Then
+        textoAutonomia.Links.CreateLink "Value", _
+            "IIf(" & qualidadesAutonomia & " And " & comparacoesAutonomia & _
+            ", """ & mensagemRecompor & """, """ & mensagemDisponibilizar & """)", 0
+    End If
 
     ' ------------------------------------------------------------------------
     ' 01.08 | Dimensoes da tela, margem e cabecalho
@@ -280,6 +320,33 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
     Item("titulo").Links.CreateLink "P_S_TXT", "Parent.P_S_Titulo"
     Item("data").P_S_TXT = auxTxt
 End Sub
+
+
+Function MontarClausulaAutonomia(ByVal info, ByVal valorReferencia, ByRef qualidade)
+    Dim tagGPE, medida, operador, valor
+
+    MontarClausulaAutonomia = ""
+    qualidade = ""
+    operador = info("operador")
+    If CodigoOperadorPowerDoc(operador) <> info("operador_check") Then Exit Function
+    If info("operador_check") = 0 Then Exit Function
+
+    tagGPE = Trim(CStr(info("tag_gpe")))
+    If tagGPE = "" Then Exit Function
+
+    ' Potencia ativa usa Abs, mas a qualidade pertence a medida original.
+    If Left(tagGPE, 4) = "Abs(" And Right(tagGPE, 1) = ")" Then
+        medida = Mid(tagGPE, 5, Len(tagGPE) - 5)
+        valor = "Abs(" & medida & ".Value)"
+    Else
+        medida = tagGPE
+        valor = medida & ".Value"
+    End If
+
+    qualidade = "OPCIsGood(" & medida & ".Quality)"
+    MontarClausulaAutonomia = "(" & valor & " " & operador & " " & _
+        Replace(CStr(valorReferencia), ",", ".") & ")"
+End Function
 
 
 ' ============================================================================
