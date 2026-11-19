@@ -109,7 +109,7 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
     Dim comparacao, qualidade
     Const mensagemRecompor = "Sistema pronto para recomposição com autonomia"
     Const mensagemDisponibilizar = "Sistema não apto para recomposição com autonomia"
-    Const mensagemInspecao = "Atenção: nem todos os checks foram verificados. Faça uma inspeção manual."
+    Const mensagemInspecao = "Atenção: Nem todos os parâmetros puderam ser verificados. Faça uma análise manual."
 
     Set oJsonParser = New aspJSON
     comparacoesAutonomia = ""
@@ -192,7 +192,7 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
         texto.TextAlignment = 0
         texto.VertTextAlignment = 1
         texto.TextFont.Name = "Arial"
-        texto.TextFont.Size = 10
+        texto.TextFont.Size = 9
         texto.TextFont.Bold = False
         texto.TextColor = RGB(90, 90, 90)
         texto.BringToFront()
@@ -273,7 +273,7 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
     textoAutonomia.TextAlignment = 1
     textoAutonomia.VertTextAlignment = 1
     textoAutonomia.TextFont.Name = "Arial"
-    textoAutonomia.TextFont.Size = 10
+    textoAutonomia.TextFont.Size = 9
     textoAutonomia.TextFont.Bold = True
     textoAutonomia.TextFont.Underline = True
     textoAutonomia.TextColor = RGB(90, 90, 90)
@@ -282,7 +282,7 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
     ' Se faltar um check, nao vincular o texto a uma conclusao parcial.
     If autonomiaIncompleta Then
         textoAutonomia.Value = mensagemInspecao
-        textoAutonomia.TextColor = RGB(145, 75, 0)
+        textoAutonomia.TextColor = RGB(192, 32, 0)
     ElseIf comparacoesAutonomia <> "" Then
         textoAutonomia.Links.CreateLink "Value", _
             "IIf(" & qualidadesAutonomia & " And " & comparacoesAutonomia & _
