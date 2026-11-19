@@ -107,8 +107,9 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
     Dim textoAutonomia, temCheck, valorReferencia
     Dim comparacoesAutonomia, qualidadesAutonomia, autonomiaIncompleta
     Dim comparacao, qualidade
-    Const mensagemRecompor = "Recompor a FT com Autonomia"
-    Const mensagemDisponibilizar = "Disponibilizar a FT com Autonomia"
+    Const mensagemRecompor = "Sistema pronto para recomposição com autonomia"
+    Const mensagemDisponibilizar = "Sistema não apto para recomposição com autonomia"
+    Const mensagemInspecao = "Atenção: nem todos os checks foram verificados. Faça uma inspeção manual."
 
     Set oJsonParser = New aspJSON
     comparacoesAutonomia = ""
@@ -221,19 +222,20 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
             check.Y = texto.Y + (texto.Height - check.Height) / 2
             check.param_PowerDoc = valorReferencia
 
-            Set Bind = check.Links.CreateLink( _
-                "scada_Measurement", _
-                CStr(resultadoExtracao("tag_gpe")), _
-                0 _
-            )
-
-            check.BringToFront()
+            temCheck = VincularMedicaoCheck(check, CStr(resultadoExtracao("tag_gpe")))
+            If temCheck Then
+                check.BringToFront()
+            Else
+                check.Visible = False
+            End If
         End If
 
-        ' 01.06.c | Ignorar manobras de disjuntor, mesmo sem tag mapeada.
-        ' Uma linha nao vazia sem check impede confirmar o conjunto.
-        If resultadoExtracao("tipo") <> "ACAO" And Trim(instrucao) <> "" Then
-            If temCheck Then
+        ' 01.06.c | Conferir a cobertura de todas as instrucoes nao vazias.
+        ' Disjuntores entram na cobertura, mas nao no calculo de autonomia.
+        If Trim(instrucao) <> "" Then
+            If Not temCheck Then
+                autonomiaIncompleta = True
+            ElseIf resultadoExtracao("tipo") <> "ACAO" Then
                 comparacao = MontarClausulaAutonomia( _
                     resultadoExtracao, valorReferencia, qualidade)
                 If comparacao = "" Then
@@ -246,8 +248,6 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
                     comparacoesAutonomia = comparacoesAutonomia & comparacao
                     qualidadesAutonomia = qualidadesAutonomia & qualidade
                 End If
-            Else
-                autonomiaIncompleta = True
             End If
         End If
     Next
@@ -279,8 +279,11 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
     textoAutonomia.TextColor = RGB(90, 90, 90)
     textoAutonomia.BringToFront()
 
-    ' Recompor somente quando todas as condicoes puderem ser confirmadas.
-    If Not autonomiaIncompleta And comparacoesAutonomia <> "" Then
+    ' Se faltar um check, nao vincular o texto a uma conclusao parcial.
+    If autonomiaIncompleta Then
+        textoAutonomia.Value = mensagemInspecao
+        textoAutonomia.TextColor = RGB(145, 75, 0)
+    ElseIf comparacoesAutonomia <> "" Then
         textoAutonomia.Links.CreateLink "Value", _
             "IIf(" & qualidadesAutonomia & " And " & comparacoesAutonomia & _
             ", """ & mensagemRecompor & """, """ & mensagemDisponibilizar & """)", 0
@@ -320,6 +323,16 @@ Sub xc_PowerDoc_OnF_B_ConfigChanged()
     Item("titulo").Links.CreateLink "P_S_TXT", "Parent.P_S_Titulo"
     Item("data").P_S_TXT = auxTxt
 End Sub
+
+
+Function VincularMedicaoCheck(ByVal check, ByVal origem)
+    Dim vinculo
+    On Error Resume Next
+    Set vinculo = Nothing
+    Set vinculo = check.Links.CreateLink("scada_Measurement", origem, 0)
+    VincularMedicaoCheck = Not (vinculo Is Nothing)
+    On Error GoTo 0
+End Function
 
 
 Function MontarClausulaAutonomia(ByVal info, ByVal valorReferencia, ByRef qualidade)

@@ -1,3 +1,4 @@
+Sub button_Click()
 ' ============================================================================
 ' POWERDOC | SELECAO DO DOCUMENTO E ABERTURA DA TELA
 ' Contrato: mesma ordem do menu, argumentos ID///titulo e chamadas ao Elipse.
@@ -26,7 +27,6 @@
 ' 01 | EVENTO DO BOTAO
 ' ============================================================================
 
-Sub button_Click()
     Dim menu, Arg, calcTela
 
     ' Menu literal: todos os grupos, itens e separadores ficam visiveis aqui.
